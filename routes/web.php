@@ -2,6 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FeedController;
+
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/feeds');
 });
+
