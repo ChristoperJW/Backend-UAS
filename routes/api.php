@@ -11,4 +11,6 @@ Route::prefix('users')->group(function () {
     Route::get('{id}/followers', [FollowController::class, 'followers']);
 
     Route::get('{id}/following', [FollowController::class, 'following']);
+
+    Route::get('{id}/follow-stats', [FollowController::class, 'followStats']);
 });
