@@ -11,15 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('feeds', function (Blueprint $table) {
             $table->id();
-            $table->text('content');
-            $table->foreignId('user_id')
-                ->nullable()
-                ->constrained()
-                ->onDelete('cascade');
-            $table->foreignId('post_id')
-                ->nullable()
+            $table->foreignId('post_id')->nullable()
                 ->constrained()
                 ->onDelete('cascade');
             $table->timestamps();
@@ -31,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
-        Schema::dropIfExists('sessions');
+        Schema::dropIfExists('feeds');
     }
 };
