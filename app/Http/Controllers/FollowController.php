@@ -61,11 +61,47 @@ class FollowController extends Controller
 
     public function followers($id)
     {
+        $user = User::find($id);
 
+        if(!user){
+            return response()->json([
+                'message'=> 'User not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'followers'=> $user->followers
+        ]);
     }
     
     public function following($id)
     {
-        
+        $user = User::find($id);
+
+        if(!user){
+            return response()->json([
+                'message'=> 'User not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'following' => $user->following
+        ]);
+    }
+
+    public function followStats($id)
+    {
+        $user = User::find($id);
+
+        if(!user){
+            return response()->json([
+                'message'=> 'User not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'followers_count' => $user->followers()->count(),
+            'following_count' => $user->following()->count()
+        ]);
     }
 }
