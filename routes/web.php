@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FriendsController;
@@ -49,3 +50,12 @@ Route::post('/posts/{post}/like', [LikeController::class, 'store'])->name('posts
 Route::delete('/posts/{post}/like', [LikeController::class, 'destroy'])->name('posts.unlike');
 
 Route::resource('comments', CommentController::class);
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/messages', [MessageController::class, 'getConversations'])->name('messages.getConversations');
+    Route::post('/messages/create', [MessageController::class, 'createConversation'])->name('messages.createConversation');
+    Route::get('/messages/{userId}', [MessageController::class, 'getMessages'])->name('messages.getMessages');
+    Route::post('/messages', [MessageController::class, 'sendMessage'])->name('messages.sendMessage');
+    Route::delete('/messages/conversation/{userId}', [MessageController::class, 'removeFullConversation'])->name('messages.removeFullConversation');
+    Route::delete('/messages/{messageId}', [MessageController::class, 'removeMessage'])->name('messages.removeMessage');
+});
