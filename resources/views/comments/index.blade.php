@@ -20,5 +20,7 @@
             </td>
         </tr>
         @endforeach
+        <br>
     </tbody>
 </table>
+<a href="/">Kembali ke Homepage</a>
