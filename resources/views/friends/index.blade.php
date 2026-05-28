@@ -7,7 +7,29 @@
 
     <h1>Friends</h1>
 
-    <p>Friends feature will be displayed soon<p>
+    <hr>
+
+    <h3>Social Statistics<h3>
+
+    <a href="/friends/followers">
+        Followers: 0
+    </a>
+
+    <br><br>
+
+    <a href="/friends/following">
+        Following: 0
+    </a>
+
+    <hr>
+
+    <h3>Suggested Friends</h3>
+
+    <div>
+        <p>User Suggestion Feature will appear here.</p>
+    </div>
+
+    <hr>
 
     <a href="/">
         <button>
