@@ -51,7 +51,12 @@ Route::delete('/posts/{post}/like', [LikeController::class, 'destroy'])->name('p
 
 Route::resource('comments', CommentController::class);
 
-Route::middleware(['auth'])->group(function () {
+Route::group(['middleware' => function ($request, $next) {
+    if (!session()->has('current_user_id')) {
+        return redirect('/login')->with('error', 'Please log in first!');
+    }
+    return $next($request);
+}], function () {
     Route::get('/messages', [MessageController::class, 'getConversations'])->name('messages.getConversations');
     Route::post('/messages/create', [MessageController::class, 'createConversation'])->name('messages.createConversation');
     Route::get('/messages/{userId}', [MessageController::class, 'getMessages'])->name('messages.getMessages');

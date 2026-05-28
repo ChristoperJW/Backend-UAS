@@ -19,6 +19,11 @@
         </button>
     </a>
     <hr>
+    <br>
+    <a href="/messages">
+        <button>Messages</button>
+    </a>
+    <hr>
     <a href="/comments">
         <button>
             Comment's here!
