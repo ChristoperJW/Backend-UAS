@@ -10,9 +10,9 @@
         {{ $currentUser->name }}
     </h2>
 
-    <h3>Switch User</h3>
+    <!-- <h3>Switch User</h3> -->
 
-    @foreach($allUsers as $user)
+    <!-- @foreach($allUsers as $user)
 
         <a href="/switch-user/{{ $user->id }}">
 
@@ -22,7 +22,7 @@
 
         |
 
-    @endforeach
+    @endforeach -->
 
     <hr>
 
