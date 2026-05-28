@@ -104,4 +104,23 @@ class FollowController extends Controller
             'following_count' => $user->following()->count()
         ]);
     }
+
+    public function followWeb($id)
+    {
+        $currentUserId = 1;
+
+        $alreadyFollowed = Follow::where('follower_id', $currentUserId)
+            ->where('following_id', $id)
+            ->exists();
+
+        if(!$alreadyFollowed) {
+            Follow::create([
+                'follower_id' => $currentUserId,
+                'following_id' => $id
+            ]);
+        }
+
+        return redirect('/friends')
+            ->with('success', 'User followed successfully');
+    }
 }
