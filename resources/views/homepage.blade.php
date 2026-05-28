@@ -24,6 +24,12 @@
             Comment's here!
         </button>
     </a>
+    <hr>
+    <a href="/feeds">
+        <button>
+            Feeds
+        </button>
+    </a>
     
 </body>
 </html>
