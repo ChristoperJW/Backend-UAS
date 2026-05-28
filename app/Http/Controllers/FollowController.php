@@ -108,7 +108,7 @@ class FollowController extends Controller
     public function followWeb($id)
     {
         $currentUserId = session('current_user_id', 1);
-        
+
         $alreadyFollowed = Follow::where('follower_id', $currentUserId)
             ->where('following_id', $id)
             ->exists();
@@ -122,5 +122,17 @@ class FollowController extends Controller
 
         return redirect('/friends')
             ->with('success', 'User followed successfully');
+    }
+
+    public function unfollowWeb($id)
+    {
+        $currentUserId = session('current_users_id', 1);
+        
+        Follow::where('follower_id', $currentUserId)
+            ->where('following_id', $id)
+            ->delete();
+
+        return redirect('/friends/following')
+            ->with('success', 'User unfollowed successfully');
     }
 }

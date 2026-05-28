@@ -58,4 +58,16 @@ class FriendsController extends Controller
 
         return view('friends.followers', compact('followers'));
     }
+
+    public function following()
+    {
+        $currentUserId = session('current_user_id', 1);
+
+        $followingIds = Follow::where('follower_id', $currentUserId)
+                ->pluck('following_id');
+
+        $followingUsers = User::whereIn('id', $followingIds)->get();
+
+        return view('friends.following', compact('followingUsers'));
+    }
 }
