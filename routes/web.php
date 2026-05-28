@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FriendsController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\FollowController;
 
 Route::get('/', function () {
@@ -25,5 +26,8 @@ Route::post('/friends/{id}/follow', [FollowController::class, 'followWeb'])
     ->name('friends.follow');
 
 Route::resource('posts', PostController::class);
+
+Route::post('/posts/{post}/like', [LikeController::class, 'store'])->name('posts.like');
+Route::delete('/posts/{post}/like', [LikeController::class, 'destroy'])->name('posts.unlike');
 
 Route::resource('comments', CommentController::class);
