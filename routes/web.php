@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FriendsController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\FollowController;
 
 Route::get('/', function () {
@@ -22,5 +23,7 @@ Route::get('friends/following', function(){
 
 Route::post('/friends/{id}/follow', [FollowController::class, 'followWeb'])
     ->name('friends.follow');
+
+Route::resource('posts', PostController::class);
 
 Route::resource('comments', CommentController::class);
