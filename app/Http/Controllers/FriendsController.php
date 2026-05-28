@@ -3,18 +3,33 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Follow;
 
 class FriendsController extends Controller
 {
     public function index()
     {
-        $currentId = 1;
+        $currentUserId = 1;
 
-        $suggestions = User::where('id', '!=', $currentId)
+        $followedUsers = Follow::where('follower_id', $currentUserId)
+            ->pluck('following_id');
+
+        $suggestions = User::where('id', '!=', $currentUserId)
+            ->whereNotIn('id', $followedUsers)
             ->inRandomOrder()
             ->take(5)
             ->get();
 
-        return view('friends.index', compact('suggestions'));
+        $followersCount = Follow::where('following_id', $currentUserId)
+            ->count();
+
+        $followingCount = Follow::where('follower_id', $currentUserId)
+            ->count();
+
+        return view('friends.index', compact(
+            'suggestions',
+            'followersCount',
+            'followingCount'
+        ));
     }
 }
