@@ -5,6 +5,12 @@
 </head>
 <body>
 
+    @if(session('success'))
+
+    <p>{{ session('success') }}</p>
+
+    @endif
+
     <h1>Friends</h1>
 
     <hr>
@@ -32,9 +38,17 @@
 
                 <strong> {{ $user->name }}</strong>
 
-                <button>
-                    Follow
-                </button>
+                <form action="{{ route('friends.follow', $user->id) }}"
+                      method="POST"
+                      style="display:inline;">
+
+                    @csrf
+
+                    <button type="submit">
+                        Follow
+                    </button>
+
+                </form>
 
             </div>
 
