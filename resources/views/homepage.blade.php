@@ -12,6 +12,7 @@
             Logout
         </button>
     </a>
+    <hr>
     <a href="{{ route('posts.index') }}">
     <button>Posts</button>
     </a>
@@ -25,6 +26,12 @@
     <a href="/comments">
         <button>
             Comment's here!
+        </button>
+    </a>
+    <hr>
+    <a href="/feeds">
+        <button>
+            Feeds
         </button>
     </a>
     
