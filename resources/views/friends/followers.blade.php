@@ -9,29 +9,17 @@
 
     <hr>
 
-    @forelse($followingUsers as $user)
+    @forelse($followers as $user)
 
-        <div style="margin-bottom: 15px;">
+    <div style="margin-bottom: 15px;">
 
-            <strong>{{ $user->name }}</strong>
+        <strong>{{ $user->name }}</strong>
 
-            <form action="{{ route('friends.unfollow', $user->id) }}"
-                  method="POST"
-                  style="display:inline;">
-
-                @csrf
-
-                <button type="submit">
-                    Unfollow
-                </button>
-
-            </form>
-
-        </div>
+    </div>
 
     @empty
 
-        <p>No following users yet.</p>
+    <p>No followers yet.</p>
 
     @endforelse
 

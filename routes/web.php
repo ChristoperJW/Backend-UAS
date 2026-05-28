@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FeedController;
 use App\Http\Controllers\FriendsController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\LikeController;
@@ -59,3 +60,6 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/messages/conversation/{userId}', [MessageController::class, 'removeFullConversation'])->name('messages.removeFullConversation');
     Route::delete('/messages/{messageId}', [MessageController::class, 'removeMessage'])->name('messages.removeMessage');
 });
+
+Route::get('/feeds', [FeedController::class, 'index'])->name('feeds.index');
+Route::post('/feeds/{post}/comment', [FeedController::class, 'comment'])->name('feeds.comment');
