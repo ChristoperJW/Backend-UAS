@@ -18,13 +18,13 @@
     <h3>Social Statistics<h3>
 
     <a href="/friends/followers">
-        Followers: 0
+        <p>Followers: {{ $followersCount }}</p>
     </a>
 
     <br><br>
 
     <a href="/friends/following">
-        Following: 0
+        <p>Following: {{ $followingCount }}</p>
     </a>
 
     <hr>
