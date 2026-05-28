@@ -13,6 +13,10 @@
         </button>
     </a>
     <hr>
+    <a href="{{ route('posts.index') }}">
+    <button>Posts</button>
+    </a>
+    <hr>
     <a href="/friends">
         <button>
             Friends

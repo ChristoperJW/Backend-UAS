@@ -23,3 +23,5 @@
         <hr>
     @endforeach
 @endif
+<br>
+<a href="/">Kembali ke Homepage</a>

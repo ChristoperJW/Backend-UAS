@@ -13,6 +13,10 @@ class FeedController extends Controller
     {
         $posts = Post::with(['user', 'comments'])->inRandomOrder()->take(3)->get();
 
+    foreach ($posts as $post) {
+        Feed::firstOrCreate(['post_id' => $post->id]);
+    }
+
     return view('feeds.index', compact('posts'));
     }
 
