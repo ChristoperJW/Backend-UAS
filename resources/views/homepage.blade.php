@@ -8,6 +8,12 @@
     <br>
     <h1>Welcome to Postify</h1>
 
+    <a href="{{ route('posts.index') }}">
+        <button>
+            Posts
+        </button>
+    </a>
+
     <a href="/friends">
         <button>
             Friends
