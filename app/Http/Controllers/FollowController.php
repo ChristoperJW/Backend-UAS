@@ -10,7 +10,7 @@ class FollowController extends Controller
 {
     public function follow($id)
     {
-        $currentUserId = 1; // Because the auth system hasn't done yet, assume the user who did it is id = 1
+        $currentUserId = session('current_user_id', 1);
 
         if($currentUserId == $id) {
             return response()->json([
@@ -40,7 +40,7 @@ class FollowController extends Controller
 
     public function unfollow($id)
     {
-        $currentUserId = 1;
+        $currentUserId = session('current_user_id', 1);
 
         $follow = Follow::where('follower_id', $currentUserId)
             ->where('following_id', $id)
@@ -107,8 +107,8 @@ class FollowController extends Controller
 
     public function followWeb($id)
     {
-        $currentUserId = 1;
-
+        $currentUserId = session('current_user_id', 1);
+        
         $alreadyFollowed = Follow::where('follower_id', $currentUserId)
             ->where('following_id', $id)
             ->exists();

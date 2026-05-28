@@ -5,14 +5,29 @@
 </head>
 <body>
 
-    <h1>Followers Page</h1>
-
-    <p>Followers list will appear here.</p>
+    <h1>Followers</h1>
 
     <a href="/friends">
-        <button>
-            Back to Friends
-        </button>
+        Back to Friends
     </a>
-    
+
+    <hr>
+
+    @forelse($followers as $user)
+
+        <div style="margin-bottom: 15px;">
+
+            <strong>{{ $user->name }}</strong>
+
+            <p>{{ $user->email }}</p>
+
+        </div>
+
+    @empty
+
+        <p>No followers yet.</p>
+
+    @endforelse
+
 </body>
+</html>
