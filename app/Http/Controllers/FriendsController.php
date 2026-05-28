@@ -9,7 +9,9 @@ class FriendsController extends Controller
 {
     public function index()
     {
-        $currentUserId = 1;
+        $currentUserId = session('current_user_id', 1);
+
+        $currentUser = User::find($currentUserId);
 
         $followedUsers = Follow::where('follower_id', $currentUserId)
             ->pluck('following_id');
@@ -26,10 +28,34 @@ class FriendsController extends Controller
         $followingCount = Follow::where('follower_id', $currentUserId)
             ->count();
 
+        $allUsers = User::all();
+
         return view('friends.index', compact(
             'suggestions',
             'followersCount',
-            'followingCount'
+            'followingCount',
+            'allUsers',
+            'currentUser'
         ));
+    }
+
+    public function switchUser($id)
+    {
+        session(['current_user_id' => $id]);
+        return redirect('/friends');
+    }
+
+    public function followers()
+    {
+        $currentUserId = session('current_user_id', 1);
+
+        $followers = User::where('id', function ($query) use ($currentUserId) {
+
+            $query->select('follower_id')
+                ->from('follows')
+                ->where('following_id', $currentUserId);
+        })->get();
+
+        return view('friends.followers', compact('followers'));
     }
 }

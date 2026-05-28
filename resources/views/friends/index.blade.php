@@ -5,6 +5,27 @@
 </head>
 <body>
 
+    <h2>
+        Current User:
+        {{ $currentUser->name }}
+    </h2>
+
+    <h3>Switch User</h3>
+
+    @foreach($allUsers as $user)
+
+        <a href="/switch-user/{{ $user->id }}">
+
+            {{ $user->name }}
+
+        </a>
+
+        |
+
+    @endforeach
+
+    <hr>
+
     @if(session('success'))
 
     <p>{{ session('success') }}</p>
@@ -15,7 +36,7 @@
 
     <hr>
 
-    <h3>Social Statistics<h3>
+    <h3>Social Statistics</h3>
 
     <a href="/friends/followers">
         <p>Followers: {{ $followersCount }}</p>
@@ -32,11 +53,12 @@
     <h3>Suggested Friends</h3>
 
     <div>
+
         @foreach($suggestions as $user)
 
             <div style="margin-bottom: 15px;">
 
-                <strong> {{ $user->name }}</strong>
+                <strong>{{ $user->name }}</strong>
 
                 <form action="{{ route('friends.follow', $user->id) }}"
                       method="POST"
@@ -63,6 +85,6 @@
             Back to homepage
         </button>
     </a>
-    
+
 </body>
 </html>
