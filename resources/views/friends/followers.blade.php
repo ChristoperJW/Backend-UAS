@@ -1,33 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Followers</title>
+    <title>Following</title>
 </head>
 <body>
 
-    <h1>Followers</h1>
-
-    <a href="/friends">
-        Back to Friends
-    </a>
+    <h1>Following List</h1>
 
     <hr>
 
-    @forelse($followers as $user)
+    @forelse($followingUsers as $user)
 
         <div style="margin-bottom: 15px;">
 
             <strong>{{ $user->name }}</strong>
 
-            <p>{{ $user->email }}</p>
+            <form action="{{ route('friends.unfollow', $user->id) }}"
+                  method="POST"
+                  style="display:inline;">
+
+                @csrf
+
+                <button type="submit">
+                    Unfollow
+                </button>
+
+            </form>
 
         </div>
 
     @empty
 
-        <p>No followers yet.</p>
+        <p>No following users yet.</p>
 
     @endforelse
+
+    <hr>
+
+    <a href="/friends">
+        <button>
+            Back to Friends
+        </button>
+    </a>
 
 </body>
 </html>
