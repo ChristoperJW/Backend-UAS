@@ -26,7 +26,20 @@
     <h3>Suggested Friends</h3>
 
     <div>
-        <p>User Suggestion Feature will appear here.</p>
+        @foreach($suggestions as $user)
+
+            <div style="margin-bottom: 15px;">
+
+                <strong> {{ $user->name }}</strong>
+
+                <button>
+                    Follow
+                </button>
+
+            </div>
+
+        @endforeach
+
     </div>
 
     <hr>
