@@ -7,7 +7,12 @@
     <img src="{{ asset('images/Postify.png') }}" width="400">
     <br>
     <h1>Welcome to Postify</h1>
-
+    <a href="/logout">
+        <button>
+            Logout
+        </button>
+    </a>
+    <hr>
     <a href="/friends">
         <button>
             Friends
