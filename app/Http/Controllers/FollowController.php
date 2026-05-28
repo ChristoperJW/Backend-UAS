@@ -46,7 +46,7 @@ class FollowController extends Controller
             ->where('following_id', $id)
             ->first();
 
-        if(!follow){
+        if(!$follow){
             return response()->json([
                 'message' => 'Follow relationship not found'
             ], 400);
@@ -54,7 +54,7 @@ class FollowController extends Controller
 
         $follow->delete();
         
-        return response()-json([
+        return response()->json([
             'message' => 'User unfollowed successfully'
         ]);
     }
@@ -63,7 +63,7 @@ class FollowController extends Controller
     {
         $user = User::find($id);
 
-        if(!user){
+        if(!$user){
             return response()->json([
                 'message'=> 'User not found'
             ], 404);
@@ -78,7 +78,7 @@ class FollowController extends Controller
     {
         $user = User::find($id);
 
-        if(!user){
+        if(!$user){
             return response()->json([
                 'message'=> 'User not found'
             ], 404);
@@ -93,7 +93,7 @@ class FollowController extends Controller
     {
         $user = User::find($id);
 
-        if(!user){
+        if(!$user){
             return response()->json([
                 'message'=> 'User not found'
             ], 404);
@@ -126,7 +126,7 @@ class FollowController extends Controller
 
     public function unfollowWeb($id)
     {
-        $currentUserId = session('current_users_id', 1);
+        $currentUserId = session('current_user_id', 1);
         
         Follow::where('follower_id', $currentUserId)
             ->where('following_id', $id)
