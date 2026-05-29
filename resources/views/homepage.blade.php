@@ -13,6 +13,12 @@
         </button>
     </a>
     <hr>
+    <a href="/account">
+        <button>
+            Account Settings
+        </button>
+    </a>
+    <hr>
     <a href="/friends">
         <button>
             Friends
