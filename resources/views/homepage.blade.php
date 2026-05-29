@@ -13,6 +13,10 @@
         </button>
     </a>
     <hr>
+    <a href="/account">
+        <button>
+            Account Settings
+        </button>
     <a href="{{ route('posts.index') }}">
     <button>Posts</button>
     </a>

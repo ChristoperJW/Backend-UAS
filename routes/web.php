@@ -1,19 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\MessageController;
-use App\Http\Controllers\LoginController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FeedController;
 use App\Http\Controllers\FriendsController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\FollowController;
-use App\Http\Controllers\RegisterController;
-
-Route::get('/register', [RegisterController::class, 'index']);
-
-Route::post('/register', [RegisterController::class, 'register']);
 
 Route::get('/', function () {
     if (!session()->has('current_user_id')) {
@@ -23,11 +19,21 @@ Route::get('/', function () {
     return view('homepage');
 });
 
-Route::get('/login', [LoginController::class, 'index']);
+Route::get('/register', [AuthController::class, 'indexSignup']);
+Route::post('/register', [AuthController::class, 'register']);
 
-Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::get('/login', [AuthController::class, 'indexLogin']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/logout', [AuthController::class, 'logout']);
 
-Route::get('/logout', [LoginController::class, 'logout']);
+Route::get('/account',function(){
+    if (!session()->has('current_user_id')) {
+        return redirect('/login')->with('error', 'Please log in first!');
+    }
+    
+    return view('account');
+});
+Route::post('/account/delete', [AccountController::class, 'deleteAccount'])->name('account.delete');
 
 Route::get('/switch-user/{id}',
     [FriendsController::class, 'switchUser']);
