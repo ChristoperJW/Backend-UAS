@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FeedController;
 use App\Http\Controllers\FriendsController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\LikeController;
@@ -57,7 +58,12 @@ Route::delete('/posts/{post}/like', [LikeController::class, 'destroy'])->name('p
 
 Route::resource('comments', CommentController::class);
 
-Route::middleware(['auth'])->group(function () {
+Route::group(['middleware' => function ($request, $next) {
+    if (!session()->has('current_user_id')) {
+        return redirect('/login')->with('error', 'Please log in first!');
+    }
+    return $next($request);
+}], function () {
     Route::get('/messages', [MessageController::class, 'getConversations'])->name('messages.getConversations');
     Route::post('/messages/create', [MessageController::class, 'createConversation'])->name('messages.createConversation');
     Route::get('/messages/{userId}', [MessageController::class, 'getMessages'])->name('messages.getMessages');
@@ -65,3 +71,6 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/messages/conversation/{userId}', [MessageController::class, 'removeFullConversation'])->name('messages.removeFullConversation');
     Route::delete('/messages/{messageId}', [MessageController::class, 'removeMessage'])->name('messages.removeMessage');
 });
+
+Route::get('/feeds', [FeedController::class, 'index'])->name('feeds.index');
+Route::post('/feeds/{post}/comment', [FeedController::class, 'comment'])->name('feeds.comment');
