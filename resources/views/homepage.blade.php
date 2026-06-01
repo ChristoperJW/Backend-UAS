@@ -17,6 +17,7 @@
         <button>
             Account Settings
         </button>
+    <hr>
     <a href="{{ route('posts.index') }}">
     <button>Posts</button>
     </a>

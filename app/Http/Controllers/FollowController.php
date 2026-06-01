@@ -113,26 +113,26 @@ class FollowController extends Controller
             ->where('following_id', $id)
             ->exists();
 
-        if(!$alreadyFollowed) {
+        if (!$alreadyFollowed) {
             Follow::create([
                 'follower_id' => $currentUserId,
                 'following_id' => $id
             ]);
         }
 
-        return redirect('/friends')
+        return back()
             ->with('success', 'User followed successfully');
     }
 
     public function unfollowWeb($id)
     {
         $currentUserId = session('current_user_id', 1);
-        
+
         Follow::where('follower_id', $currentUserId)
             ->where('following_id', $id)
             ->delete();
 
-        return redirect('/friends/following')
+        return back()
             ->with('success', 'User unfollowed successfully');
     }
 }
