@@ -45,7 +45,7 @@ class MessageController extends Controller
             $q->where('sender_id', session('current_user_id'))->where('receiver_id', $userId);
         })->orWhere(function($q) use ($userId) {
             $q->where('sender_id', $userId)->where('receiver_id', session('current_user_id'));
-        })->orderBy('created_at', 'asc')->get();
+        })->orderBy('created_at', 'asc')->paginate(50);
 
         return view('messages.show', compact('receiver', 'messages'));
     }
