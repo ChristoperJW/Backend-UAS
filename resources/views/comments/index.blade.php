@@ -13,9 +13,13 @@
             <td>{{ $post->caption }}</td>
             <td>
                 @if ($post->comments->count() > 0)
-                    <a href="{{ route('comments.show', $post->comments->first()) }}">lihat komen</a>
+                    <a href="{{ route('comments.show', $post->comments->first()) }}">
+                    <img src="{{ asset('images/comment.png') }}" width="45">
+                    </a>
                 @else
-                    <a href="{{ route('comments.create', ['post_id' => $post->id]) }}">unggah</a>
+                    <a href="{{ route('comments.create', ['post_id' => $post->id]) }}">
+                    <img src="{{ asset('images/comment.png') }}" width="45">
+                    </a>
                 @endif
             </td>
         </tr>

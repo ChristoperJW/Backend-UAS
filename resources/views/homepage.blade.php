@@ -8,24 +8,20 @@
     <br>
     <h1>Welcome to Postify</h1>
     <a href="/logout">
-        <button>
-            Logout
-        </button>
+        <img src="{{ asset('images/logout.png') }}" width="70">
     </a>
     <hr>
     <a href="/account">
         <button>
             Account Settings
         </button>
-        <hr>
+    <hr>
     <a href="{{ route('posts.index') }}">
-    <button>Posts</button>
+    <img src="{{ asset('images/post.png') }}" width="45">
     </a>
     <hr>
     <a href="/friends">
-        <button>
-            Friends
-        </button>
+        <img src="{{ asset('images/friends.png') }}" width="50">
     </a>
     <hr>
     <br>
@@ -34,15 +30,11 @@
     </a>
     <hr>
     <a href="/comments">
-        <button>
-            Comment's here!
-        </button>
+        <img src="{{ asset('images/comment.png') }}" width="45">
     </a>
     <hr>
     <a href="/feeds">
-        <button>
-            Feeds
-        </button>
+        <img src="{{ asset('images/feeds.png') }}" width="70">
     </a>
     
 </body>
