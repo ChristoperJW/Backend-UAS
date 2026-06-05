@@ -29,7 +29,7 @@ class PostController extends Controller
     public function create()
     {
         if(!$this->currentUserId()) {
-            return redirect('/login') -> with('Error', 'Tolong Login Terlebih Dahulu!');
+            return redirect('/login') -> with('error', 'Tolong Login Terlebih Dahulu!');
         }
         return view('posts.create'); 
     }
@@ -37,7 +37,7 @@ class PostController extends Controller
     public function store(Request $request)
     {
         if(!$this->currentUserId()) {
-            return redirect('/login') -> with('Error', 'Tolong Login Terlebih Dahulu!');
+            return redirect('/login') -> with('error', 'Tolong Login Terlebih Dahulu!');
         }
 
         $request->validate([
@@ -64,7 +64,7 @@ class PostController extends Controller
     public function edit(Post $post)
     {
         if($post->user_id !== $this->currentUserId()) {
-            return redirect() -> route('posts.index') -> with ('Error', 'Anda Tidak Punya Akses Untuk Mengedit Postingan Ini!');
+            return redirect() -> route('posts.index') -> with ('error', 'Anda Tidak Punya Akses Untuk Mengedit Postingan Ini!');
         }
 
         return view('posts.edit', compact('post'));
@@ -73,7 +73,7 @@ class PostController extends Controller
     public function update(Request $request, Post $post)
     {
         if($post->user_id !== $this->currentUserId()) {
-            return redirect() -> route('posts.index') -> with ('Error', 'Anda Tidak Punya Akses Untuk Mengupdate Postingan Ini!');
+            return redirect() -> route('posts.index') -> with ('error', 'Anda Tidak Punya Akses Untuk Mengupdate Postingan Ini!');
         }
 
         $request->validate([
@@ -89,7 +89,7 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         if($post->user_id !== $this->currentUserId()) {
-            return redirect() -> route('posts.index') -> with ('Error', 'Anda Tidak Punya Akses Untuk Menghapus Postingan Ini!');
+            return redirect() -> route('posts.index') -> with ('error', 'Anda Tidak Punya Akses Untuk Menghapus Postingan Ini!');
         }
 
         $post->delete();
