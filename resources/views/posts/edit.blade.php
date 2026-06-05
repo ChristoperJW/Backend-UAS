@@ -22,6 +22,15 @@
     <input type="text" name="media" value="{{ old('media', $post->media) }}">
     <br><br>
 
+    Tags:
+    <br>
+    @foreach ($tags as $tag)
+    <input type="checkbox" name="tags[]" value="{{ $tag->id }}" {{ $post->tags->contains($tag) ? 'checked' : '' }}>
+    {{ $tag->name }}
+    <br>
+    @endforeach
+    <br>
+
     <button type="submit">Simpan</button>
 </form>
 

@@ -31,6 +31,14 @@
     {{ $post->likes->count() }}
 </p>
 
+<p>
+    <strong>Tags:</strong>
+    <br>
+    @foreach ($post->tags as $tag)
+        #{{ $tag->name }}
+    @endforeach
+</p>
+
 <form method="POST" action="{{ route('posts.like', $post) }}" style="display:inline;">
     @csrf
     <button type="submit">Like</button>

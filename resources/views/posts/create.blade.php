@@ -21,6 +21,15 @@
     <input type="text" name="media" value="{{ old('media') }}">
     <br><br>
 
+    Tags:
+    <br>
+    @foreach ($tags as $tag)
+    <input type="checkbox" name="tags[]" value="{{ $tag->id }}">
+    {{ $tag->name }}
+    <br>
+    @endforeach
+    <br>
+
     <button type="submit">Simpan</button>
 </form>
 

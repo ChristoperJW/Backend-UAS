@@ -48,13 +48,13 @@ class PostController extends Controller
             'media' => 'nullable|string',
         ]);
 
-        Post::create([
+        $post = Post::create([
             'user_id' => $this->currentUserId(),
             'caption' => $request->caption,
             'media' => $request->media,
         ]);
 
-        $post->tags()->sync($request->tags ?? []);
+        $post->tags()->sync($request->tags ?? []); 
 
         return redirect()->route('posts.index')->with('success', 'Post Created Successfully');
     }

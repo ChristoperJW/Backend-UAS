@@ -38,6 +38,7 @@
             <th style="width: 150px">User</th>
             <th style="width: 100px">Like</th>
             <th style="width: 220px">Aksi</th>
+            <th style="width: 200px">Tags</th>
         </tr>
     </thead>
     <tbody>
@@ -56,6 +57,7 @@
                 @else
                     User ID: {{ $post->user_id }}
                 @endif
+                
             </td>
             <td style="text-align: center">{{ $post->likes->count() }}</td>
             <td style="text-align: center">
@@ -68,6 +70,11 @@
                     @method('DELETE')
                     <button type="submit">Hapus</button>
                 </form>
+            </td>
+            <td>
+                @foreach ($post->tags as $tag)
+                    #{{ $tag->name }}
+                @endforeach
             </td>
         </tr>
         @endforeach
