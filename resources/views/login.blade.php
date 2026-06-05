@@ -4,6 +4,8 @@
         <title>Login</title>
     </head>
     <body>
+        <img src="{{ asset('images/Postify.png') }}" width="400">
+        <br>
         <h1>
             @if(session('error'))
                 <div class="error">{{ session('error') }}</div>
