@@ -12,6 +12,7 @@ class MessageController extends Controller
     public function getConversations()
     {
         $userId = session('current_user_id');
+        
         $messages = Message::where('sender_id', $userId)
             ->orWhere('receiver_id', $userId)
             ->orderBy('created_at', 'desc')
@@ -24,9 +25,11 @@ class MessageController extends Controller
                 $conversations->put($otherUserId, User::find($otherUserId));
             }
         }
+        
+        $activeChats = $conversations->values();
+        $allUsers = User::where('id', '!=', $userId)->orderBy('name', 'asc')->get();
 
-        $users = $conversations->values();
-        return view('messages.index', compact('users'));
+        return view('messages.index', compact('activeChats', 'allUsers'));
     }
 
     public function createConversation(Request $request)
@@ -42,7 +45,7 @@ class MessageController extends Controller
             $q->where('sender_id', session('current_user_id'))->where('receiver_id', $userId);
         })->orWhere(function($q) use ($userId) {
             $q->where('sender_id', $userId)->where('receiver_id', session('current_user_id'));
-        })->orderBy('created_at', 'asc')->get();
+        })->orderBy('created_at', 'asc')->paginate(50);
 
         return view('messages.show', compact('receiver', 'messages'));
     }
