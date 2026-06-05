@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use App\Models\Tag;
 
 class PostController extends Controller
 {
@@ -16,7 +17,7 @@ class PostController extends Controller
     {
         $search = $request->search;
 
-        $posts = Post::with(['user', 'likes']) 
+        $posts = Post::with(['user', 'likes', 'tags']) 
             ->when($search, function ($query) use ($search) {
                 return $query->where('caption', 'like', '%' . $search . '%');
             })
@@ -31,7 +32,9 @@ class PostController extends Controller
         if(!$this->currentUserId()) {
             return redirect('/login') -> with('error', 'Tolong Login Terlebih Dahulu!');
         }
-        return view('posts.create'); 
+
+        $tags = Tag::all();
+        return view('posts.create', compact('tags')); 
     }
 
     public function store(Request $request)
@@ -51,12 +54,14 @@ class PostController extends Controller
             'media' => $request->media,
         ]);
 
+        $post->tags()->sync($request->tags ?? []);
+
         return redirect()->route('posts.index')->with('success', 'Post Created Successfully');
     }
 
     public function show(Post $post)
     {
-        $post->load(['user', 'likes']);
+        $post->load(['user', 'likes', 'tags']);
 
         return view('posts.show', compact('post'));
     }
@@ -67,7 +72,9 @@ class PostController extends Controller
             return redirect() -> route('posts.index') -> with ('error', 'Anda Tidak Punya Akses Untuk Mengedit Postingan Ini!');
         }
 
-        return view('posts.edit', compact('post'));
+        $tags = Tag::all();
+
+        return view('posts.edit', compact('post', 'tags'));
     }
 
     public function update(Request $request, Post $post)
@@ -82,6 +89,8 @@ class PostController extends Controller
         ]);
 
         $post->update($request->only('caption', 'media'));
+
+        $post->tags()->sync($request->tags ?? []);
 
         return redirect()->route('posts.index')->with('success', 'Post Updated Successfully');
     }
