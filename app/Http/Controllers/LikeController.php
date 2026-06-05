@@ -8,10 +8,19 @@ use Illuminate\Http\Request;
 
 class LikeController extends Controller
 {
+    private function currentUserId()
+    {
+        return session('current_user_id');
+    }
+
     public function store(Post $post)
     {
+        if(!$this->currentUserId()) {
+            return redirect('/login') -> with('Error', 'Tolong Login Terlebih Dahulu!');
+        }
+
         Like::firstOrCreate([
-            'user_id' => 1,
+            'user_id' => $this->currentUserId(),
             'post_id' => $post->id,
         ]);
 
@@ -20,7 +29,11 @@ class LikeController extends Controller
 
     public function destroy(Post $post)
     {
-        Like::where('user_id',1)
+        if(!$this->currentUserId()) {
+            return redirect('/login') -> with('Error', 'Tolong Login Terlebih Dahulu!');
+        }
+
+        Like::where('user_id', $this->currentUserId())
         ->where('post_id', $post->id)
         ->delete();
 
