@@ -10,20 +10,6 @@
         {{ $currentUser->name }}
     </h2>
 
-    <!-- <h3>Switch User</h3> -->
-
-    <!-- @foreach($allUsers as $user)
-
-        <a href="/switch-user/{{ $user->id }}">
-
-            {{ $user->name }}
-
-        </a>
-
-        |
-
-    @endforeach -->
-
     <hr>
 
     @if(session('success'))
@@ -36,13 +22,44 @@
 
     <hr>
 
+    <h3>Search Users</h3>
+
+    <form action="/friends" method="GET">
+        <input type="text" name="search" placeholder="Search user by name or email" value="{{ request('search') }}">
+        <button type="submit">Search</button>
+    </form>
+
+    @if(request('search'))
+        <h4>Search Results</h4>
+
+        @forelse($searchResults as $user)
+            <div style="margin-bottom: 15px;">
+                <strong>{{ $user->name }}</strong>
+                <p>{{ $user->email }}</p>
+
+                @if($followedUsers->contains($user->id))
+                    <form action="{{ route('friends.unfollow', $user->id) }}" method="POST" style="display:inline;">
+                        @csrf
+                        <button type="submit">Unfollow</button>
+                    </form>
+                @else
+                    <form action="{{ route('friends.follow', $user->id) }}" method="POST" style="display:inline;">
+                        @csrf
+                        <button type="submit">Follow</button>
+                    </form>
+                @endif
+            </div>
+        @empty
+            <p>No users found.</p>
+        @endforelse
+    @endif
+
     <h3>Social Statistics</h3>
 
     <a href="/friends/followers">
         <p>Followers: {{ $followersCount }}</p>
     </a>
 
-    <br><br>
 
     <a href="/friends/following">
         <p>Following: {{ $followingCount }}</p>

@@ -11,7 +11,7 @@ class MessageController extends Controller
 {
     public function getConversations()
     {
-        $userId = Auth::id();
+        $userId = session('current_user_id');
         $messages = Message::where('sender_id', $userId)
             ->orWhere('receiver_id', $userId)
             ->orderBy('created_at', 'desc')
@@ -39,9 +39,9 @@ class MessageController extends Controller
     {
         $receiver = User::findOrFail($userId);
         $messages = Message::where(function($q) use ($userId) {
-            $q->where('sender_id', Auth::id())->where('receiver_id', $userId);
+            $q->where('sender_id', session('current_user_id'))->where('receiver_id', $userId);
         })->orWhere(function($q) use ($userId) {
-            $q->where('sender_id', $userId)->where('receiver_id', Auth::id());
+            $q->where('sender_id', $userId)->where('receiver_id', session('current_user_id'));
         })->orderBy('created_at', 'asc')->get();
 
         return view('messages.show', compact('receiver', 'messages'));
@@ -55,7 +55,7 @@ class MessageController extends Controller
         ]);
 
         Message::create([
-            'sender_id' => Auth::id(),
+            'sender_id' => session('current_user_id'),
             'receiver_id' => $request->receiver_id,
             'content' => $request->content
         ]);
@@ -66,9 +66,9 @@ class MessageController extends Controller
     public function removeFullConversation($userId)
     {
         Message::where(function($q) use ($userId) {
-            $q->where('sender_id', Auth::id())->where('receiver_id', $userId);
+            $q->where('sender_id', session('current_user_id'))->where('receiver_id', $userId);
         })->orWhere(function($q) use ($userId) {
-            $q->where('sender_id', $userId)->where('receiver_id', Auth::id());
+            $q->where('sender_id', $userId)->where('receiver_id', session('current_user_id'));
         })->delete();
 
         return redirect()->route('messages.getConversations');
@@ -77,7 +77,7 @@ class MessageController extends Controller
     public function removeMessage($messageId)
     {
         $message = Message::findOrFail($messageId);
-        if ($message->sender_id === Auth::id()) {
+        if ($message->sender_id === session('current_user_id')) {
             $message->delete();
         }
         return back();

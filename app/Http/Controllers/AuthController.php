@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-class LoginController extends Controller
+class AuthController extends Controller
 {
-    // Show the login form
-    public function index()
+    public function indexLogin()
     {
         return view('login'); 
     }
@@ -15,7 +14,6 @@ class LoginController extends Controller
     // Process the login
     public function login(Request $request)
     {
-        // 2. Add password to the validation requirements
         $request->validate([
             'email' => 'required|email',
             'password' => 'required' 
@@ -23,14 +21,12 @@ class LoginController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        // 3. Check if the user exists AND if the hashed password matches
         if ($user && Hash::check($request->password, $user->password)) {
             
             session(['current_user_id' => $user->id]);
             return redirect('/'); 
         }
 
-        // 4. Return a generic error message (don't tell them which one was wrong!)
         return back()->with('error', 'Invalid email or password.');
     }
 
@@ -38,5 +34,29 @@ class LoginController extends Controller
     {
         $request->session()->forget('current_user_id');
         return redirect('/login');
+    }
+
+    public function indexSignup()
+    {
+        return view('signup');
+    }
+
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:4' 
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        session(['current_user_id' => $user->id]);
+
+        return redirect('/')->with('success', 'Account created successfully!');
     }
 }

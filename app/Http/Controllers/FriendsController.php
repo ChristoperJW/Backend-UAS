@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Follow;
 
 class FriendsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $currentUserId = session('current_user_id', 1);
 
@@ -19,22 +20,30 @@ class FriendsController extends Controller
         $suggestions = User::where('id', '!=', $currentUserId)
             ->whereNotIn('id', $followedUsers)
             ->inRandomOrder()
-            ->take(5)
+            ->take(3)
             ->get();
 
-        $followersCount = Follow::where('following_id', $currentUserId)
-            ->count();
+        $searchResults = collect();
 
-        $followingCount = Follow::where('follower_id', $currentUserId)
-            ->count();
+        if ($request->filled('search')) {
+            $searchResults = User::where('id', '!=', $currentUserId)
+                ->where(function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('email', 'like', '%' . $request->search . '%');
+                })
+                ->get();
+        }
 
-        $allUsers = User::all();
+        $followersCount = Follow::where('following_id', $currentUserId)->count();
+
+        $followingCount = Follow::where('follower_id', $currentUserId)->count();
 
         return view('friends.index', compact(
             'suggestions',
+            'searchResults',
+            'followedUsers',
             'followersCount',
             'followingCount',
-            'allUsers',
             'currentUser'
         ));
     }
@@ -49,8 +58,7 @@ class FriendsController extends Controller
     {
         $currentUserId = session('current_user_id', 1);
 
-        $followers = User::where('id', function ($query) use ($currentUserId) {
-
+        $followers = User::whereIn('id', function ($query) use ($currentUserId) {
             $query->select('follower_id')
                 ->from('follows')
                 ->where('following_id', $currentUserId);

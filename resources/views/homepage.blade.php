@@ -11,12 +11,22 @@
         <img src="{{ asset('images/logout.png') }}" width="70">
     </a>
     <hr>
+    <a href="/account">
+        <button>
+            Account Settings
+        </button>
+    <hr>
     <a href="{{ route('posts.index') }}">
     <img src="{{ asset('images/post.png') }}" width="45">
     </a>
     <hr>
     <a href="/friends">
         <img src="{{ asset('images/friends.png') }}" width="50">
+    </a>
+    <hr>
+    <br>
+    <a href="/messages">
+        <button>Messages</button>
     </a>
     <hr>
     <a href="/comments">
