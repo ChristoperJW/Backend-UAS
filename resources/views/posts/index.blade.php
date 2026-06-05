@@ -22,6 +22,10 @@
     <p>{{ session('success') }}</p>
 @endif
 
+@if (session('error'))
+    <p>{{ session('error')}}</p>
+@endif
+
 @if ($posts->isEmpty())
     <p>Belum ada post yang tersimpan.</p>
 @else
