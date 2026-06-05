@@ -63,7 +63,7 @@ class PostController extends Controller
 
     public function edit(Post $post)
     {
-        if($post->user_id !== $this->currentUserId()) {
+        if($post->user_id != $this->currentUserId()) {
             return redirect() -> route('posts.index') -> with ('error', 'Anda Tidak Punya Akses Untuk Mengedit Postingan Ini!');
         }
 
@@ -72,7 +72,7 @@ class PostController extends Controller
 
     public function update(Request $request, Post $post)
     {
-        if($post->user_id !== $this->currentUserId()) {
+        if($post->user_id != $this->currentUserId()) {
             return redirect() -> route('posts.index') -> with ('error', 'Anda Tidak Punya Akses Untuk Mengupdate Postingan Ini!');
         }
 
@@ -88,7 +88,7 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
-        if($post->user_id !== $this->currentUserId()) {
+        if($post->user_id != $this->currentUserId()) {
             return redirect() -> route('posts.index') -> with ('error', 'Anda Tidak Punya Akses Untuk Menghapus Postingan Ini!');
         }
 
