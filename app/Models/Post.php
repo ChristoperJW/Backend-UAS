@@ -23,4 +23,13 @@ class Post extends Model
         return $this->hasMany(Comment::class);
     }
 
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
+
+    public function taggedUsers()
+    {
+        return $this->belongsToMany(User::class, 'post_user_tags');
+    }
 }

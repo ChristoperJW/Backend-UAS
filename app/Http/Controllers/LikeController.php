@@ -16,7 +16,7 @@ class LikeController extends Controller
     public function store(Post $post)
     {
         if(!$this->currentUserId()) {
-            return redirect('/login') -> with('Error', 'Tolong Login Terlebih Dahulu!');
+            return redirect('/login') -> with('error', 'Tolong Login Terlebih Dahulu!');
         }
 
         Like::firstOrCreate([
@@ -30,7 +30,7 @@ class LikeController extends Controller
     public function destroy(Post $post)
     {
         if(!$this->currentUserId()) {
-            return redirect('/login') -> with('Error', 'Tolong Login Terlebih Dahulu!');
+            return redirect('/login') -> with('error', 'Tolong Login Terlebih Dahulu!');
         }
 
         Like::where('user_id', $this->currentUserId())

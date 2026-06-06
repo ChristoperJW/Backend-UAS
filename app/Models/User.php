@@ -69,4 +69,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Like::class);
     }
+
+    public function taggedPosts()
+    {
+        return $this->belongsToMany(Post::class, 'post_user_tags');
+    }
 } 
