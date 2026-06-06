@@ -38,7 +38,7 @@
             <th style="width: 150px">User</th>
             <th style="width: 100px">Like</th>
             <th style="width: 220px">Aksi</th>
-            <th style="width: 200px">Tags</th>
+            <th style="width: 200px">Hashtags</th>
         </tr>
     </thead>
     <tbody>

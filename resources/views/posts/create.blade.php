@@ -21,7 +21,7 @@
     <input type="text" name="media" value="{{ old('media') }}">
     <br><br>
 
-    Tags:
+    Hashtags:
     <br>
     @foreach ($tags as $tag)
     <input type="checkbox" name="tags[]" value="{{ $tag->id }}">

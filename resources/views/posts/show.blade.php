@@ -32,7 +32,7 @@
 </p>
 
 <p>
-    <strong>Tags:</strong>
+    <strong>Hashtags:</strong>
     <br>
     @foreach ($post->tags as $tag)
         #{{ $tag->name }}
