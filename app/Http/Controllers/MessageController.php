@@ -27,15 +27,20 @@ class MessageController extends Controller
         }
         
         $activeChats = $conversations->values();
-        $allUsers = User::where('id', '!=', $userId)->orderBy('name', 'asc')->get();
+        $allUsers = User::orderBy('name', 'asc')->get();
 
         return view('messages.index', compact('activeChats', 'allUsers'));
     }
 
     public function createConversation(Request $request)
     {
-        $request->validate(['receiver_id' => 'required|exists:users,id']);
-        return redirect()->route('messages.getMessages', $request->receiver_id);
+        $request->validate([
+            'name' => 'required|exists:users,name'
+        ]);
+
+        $receiver = User::where('name', $request->name)->first();
+
+        return redirect()->route('messages.getMessages', $receiver->id);
     }
 
     public function getMessages($userId)
