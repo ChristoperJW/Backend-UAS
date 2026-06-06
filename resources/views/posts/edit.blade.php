@@ -31,6 +31,15 @@
     @endforeach
     <br>
 
+    Tag Users:
+    <br>
+    @foreach ($users as $user)
+    <input type="checkbox" name="tagged_users[]" value="{{ $user->id }}" {{ $post->taggedUsers->contains($user) ? 'checked' : '' }}>
+    {{ $user->name }}
+    <br>
+    @endforeach
+    <br>
+    
     <button type="submit">Simpan</button>
 </form>
 
