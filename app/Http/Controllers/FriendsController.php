@@ -78,4 +78,32 @@ class FriendsController extends Controller
 
         return view('friends.following', compact('followingUsers'));
     }
+
+    public function discover() 
+    {
+        if (!session()->has('current_user_id')) {
+            return redirect('/login')->with('error', 'Please log in first');
+        }
+
+        $currentUserId = session('current_user_id');
+
+        $followingIds = Follow::where('follower_id', $currentUserId)
+            ->pluck('following_id');
+
+        $discoverUserIds = Follow::whereIn('follower_id', $followingIds)
+            ->where('following_id', '!=', $currentUserId)
+            ->whereNotIn('following_id', $followingIds)
+            ->pluck('following_id')
+            ->unique();
+
+        $discoverUsers = User::whereIn('id', $discoverUserIds)->get();
+
+        foreach ($discoverUsers as $user) {
+            $user->mutual_count = Follow::whereIn('follower_id', $followingIds)
+                ->where('following_id', $user->id)
+                ->count();
+        }
+
+        return view('friends.discover', compact('discoverUsers'));
+    }
 }
