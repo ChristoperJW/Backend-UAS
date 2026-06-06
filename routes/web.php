@@ -20,40 +20,31 @@ Route::get('/', function () {
     return view('homepage');
 });
 
+
 Route::get('/register', [AuthController::class, 'indexSignup']);
 Route::post('/register', [AuthController::class, 'register']);
-
 Route::get('/login', [AuthController::class, 'indexLogin']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/logout', [AuthController::class, 'logout']);
+
 
 Route::get('/account',function(){
     if (!session()->has('current_user_id')) {
         return redirect('/login')->with('error', 'Please log in first!');
     }
-    
     return view('account');
 });
 Route::post('/account/delete', [AccountController::class, 'deleteAccount']);
 Route::get('/account/update', [AccountController::class, 'indexUpdate']);
 Route::post('/account/update', [AccountController::class, 'updateAccount']);
 
-Route::get('/switch-user/{id}',
-    [FriendsController::class, 'switchUser']);
 
-Route::get('/friends', [FriendsController::class, 'index'
-]);
-
+Route::get('/switch-user/{id}', [FriendsController::class, 'switchUser']);
+Route::get('/friends', [FriendsController::class, 'index']);
 Route::get('/friends/followers', [FriendsController::class, 'followers']);
-
 Route::get('/friends/following', [FriendsController::class, 'following']);
-
-Route::post('/friends/{id}/follow', [FollowController::class, 'followWeb'])
-    ->name('friends.follow');
-
-Route::post('/friends/{id}/unfollow', [FollowController::class, 'unfollowWeb'])
-    ->name('friends.unfollow');
-
+Route::post('/friends/{id}/follow', [FollowController::class, 'followWeb'])->name('friends.follow');
+Route::post('/friends/{id}/unfollow', [FollowController::class, 'unfollowWeb'])->name('friends.unfollow');
 Route::get('/friends/discover', [FriendsController::class, 'discover']);
 
 Route::get('/users/{id}/profile', [FriendsController::class, 'profile'])
@@ -61,10 +52,15 @@ Route::get('/users/{id}/profile', [FriendsController::class, 'profile'])
 
 Route::resource('posts', PostController::class);
 
+Route::resource('posts', PostController::class);
 Route::post('/posts/{post}/like', [LikeController::class, 'store'])->name('posts.like');
 Route::delete('/posts/{post}/like', [LikeController::class, 'destroy'])->name('posts.unlike');
-
 Route::resource('comments', CommentController::class);
+
+
+Route::get('/feeds', [FeedController::class, 'index'])->name('feeds.index');
+Route::post('/feeds/{post}/comment', [FeedController::class, 'comment'])->name('feeds.comment');
+
 
 Route::group(['middleware' => function ($request, $next) {
     if (!session()->has('current_user_id')) {
@@ -73,6 +69,7 @@ Route::group(['middleware' => function ($request, $next) {
     return $next($request);
 }], function () {
     Route::get('/messages', [MessageController::class, 'getConversations'])->name('messages.getConversations');
+    Route::get('/messages/search', [MessageController::class, 'searchUsers'])->name('messages.searchUsers');
     Route::post('/messages/create', [MessageController::class, 'createConversation'])->name('messages.createConversation');
     Route::get('/messages/{userId}', [MessageController::class, 'getMessages'])->name('messages.getMessages');
     Route::post('/messages', [MessageController::class, 'sendMessage'])->name('messages.sendMessage');

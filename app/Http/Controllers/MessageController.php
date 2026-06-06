@@ -32,6 +32,22 @@ class MessageController extends Controller
         return view('messages.index', compact('activeChats', 'allUsers'));
     }
 
+    public function searchUsers(Request $request)
+    {
+        $search = $request->query('q');
+        
+        if (!$search) {
+            return response()->json([]);
+        }
+
+        $users = User::where('name', 'like', '%' . $search . '%')
+                    ->orderBy('name', 'asc')
+                    ->limit(10)
+                    ->get(['id', 'name']);
+
+        return response()->json($users);
+    }
+
     public function createConversation(Request $request)
     {
         $request->validate([
