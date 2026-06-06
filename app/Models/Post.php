@@ -28,4 +28,8 @@ class Post extends Model
         return $this->belongsToMany(Tag::class);
     }
 
+    public function taggedUsers()
+    {
+        return $this->belongsToMany(User::class, 'posts_user_tags');
+    }
 }

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('posts_user_tags', function (Blueprint $table) {
+        Schema::create('post_user_tags', function (Blueprint $table) {
             $table->foreignId('posts_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); 
             $table->timestamps();
