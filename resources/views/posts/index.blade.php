@@ -51,7 +51,7 @@
                     {{ $post->caption }}
                 </a>
             </td>
-            <td>{{ $post->media }}</td>
+            <td><img src="{{ asset('images/' . $post->media) }}" width="200"></td>
             <td>
                 @if ($post->user)
                     {{ $post->user->name ?? $post->user->fullName ?? $post->user->email }}

@@ -10,6 +10,7 @@ use App\Http\Controllers\FriendsController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\FollowController;
+use App\Http\Controllers\NotificationController;
 
 Route::get('/', function () {
     if (!session()->has('current_user_id')) {
@@ -76,3 +77,6 @@ Route::group(['middleware' => function ($request, $next) {
 
 Route::get('/feeds', [FeedController::class, 'index'])->name('feeds.index');
 Route::post('/feeds/{post}/comment', [FeedController::class, 'comment'])->name('feeds.comment');
+
+Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');

@@ -11,5 +11,6 @@
                 Delete My Account
             </button>
         </form>
+        <a href="/">Back</a>
     </body>
 </html>
