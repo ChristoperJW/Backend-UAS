@@ -17,7 +17,7 @@ class PostController extends Controller
     {
         $search = $request->search;
 
-        $posts = Post::with(['user', 'likes', 'tags']) 
+        $posts = Post::with(['user', 'likes', 'tags', 'taggedUsers']) 
             ->when($search, function ($query) use ($search) {
                 return $query->where('caption', 'like', '%' . $search . '%');
             })
@@ -34,7 +34,9 @@ class PostController extends Controller
         }
 
         $tags = Tag::all();
-        return view('posts.create', compact('tags')); 
+        $users = User::where ('id', '!=', $this->currentUserId())->get();
+
+        return view('posts.create', compact('tags', 'users')); 
     }
 
     public function store(Request $request)
@@ -55,13 +57,14 @@ class PostController extends Controller
         ]);
 
         $post->tags()->sync($request->tags ?? []); 
+        $post->taggedUsers()->sync($request->tagged_users ?? []);
 
         return redirect()->route('posts.index')->with('success', 'Post Created Successfully');
     }
 
     public function show(Post $post)
     {
-        $post->load(['user', 'likes', 'tags']);
+        $post->load(['user', 'likes', 'tags', 'taggedUsers']);
 
         return view('posts.show', compact('post'));
     }
@@ -73,8 +76,9 @@ class PostController extends Controller
         }
 
         $tags = Tag::all();
-
-        return view('posts.edit', compact('post', 'tags'));
+        $users = User::where ('id', '!=', $this->currentUserId())->get();
+        
+        return view('posts.edit', compact('post', 'tags', 'users'));
     }
 
     public function update(Request $request, Post $post)
@@ -91,6 +95,7 @@ class PostController extends Controller
         $post->update($request->only('caption', 'media'));
 
         $post->tags()->sync($request->tags ?? []);
+        $post->taggedUsers()->sync($request->tagged_users ?? []);
 
         return redirect()->route('posts.index')->with('success', 'Post Updated Successfully');
     }
