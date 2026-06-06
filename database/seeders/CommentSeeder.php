@@ -12,19 +12,16 @@ class CommentSeeder extends Seeder
 {
     public function run(): void
     {
-        $user = User::firstOrCreate([
-            'name'     => 'monica',
-            'email'    => 'monica@gmail.com',
-            'password' => bcrypt('monica123'),
-        ]);
+        $user = User::where('email', 'monica@example.com')->firstOrFail();
 
         $post = Post::firstOrCreate([
-            'caption' => 'image1',
-            'user_id' => $user->id, 'media' => 'image1.jpg'
+            'caption' => 'A cat!',
+            'user_id' => $user->id,
+            'media' => 'cat.jpeg'
         ]);
 
         Comment::create([
-            'content' => 'unggah',
+            'content' => 'Cute cat!',
             'user_id' => $user->id,
             'post_id' => $post->id,
         ]);

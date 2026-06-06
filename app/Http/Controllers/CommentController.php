@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use App\Http\Controllers\NotificationController;
 
 class CommentController extends Controller
 {
@@ -34,6 +35,7 @@ class CommentController extends Controller
 
     public function store(Request $request)
     {
+
         if(!$this->currentUserId()) {
             return redirect('/login')->with('Error', 'Tolong Login Terlebih Dahulu!');
         }
@@ -43,13 +45,15 @@ class CommentController extends Controller
             'post_id'  => 'required|exists:posts,id',
         ]);
 
-        Comment::create([
+        $comment = Comment::create([
             'content' => $request->input('komentar'),
             'post_id' => $request->input('post_id'),
             'user_id' => $this->currentUserId(),
         ]);
 
-        return redirect()->route('comments.index')->with('success', 'Comment created successfully.');
+        NotificationController::create($comment->post->user_id, $this->currentUserId(), 'comment', $comment->post_id);
+
+        return redirect()->route('comments.show', $comment)->with('success', 'Comment created successfully.');
     }
 
     public function show(Comment $comment)
@@ -63,15 +67,28 @@ class CommentController extends Controller
     public function destroy(Comment $comment)
     {
         if(!$this->currentUserId()) {
-            return redirect('/login')->with('Error', 'Tolong Login Terlebih Dahulu!');
-        }
+        return redirect('/login')->with('Error', 'Tolong Login Terlebih Dahulu!');
+    }
 
-        if($comment->user_id !== $this->currentUserId()) {
-            return redirect()->route('comments.index')->with('Error', 'Anda Tidak Punya Akses Untuk Menghapus Komentar Ini!');
-        }
+    if($comment->user_id !== $this->currentUserId()) {
+        return redirect()->back()->with('Error', 'Anda Tidak Punya Akses Untuk Menghapus Komentar Ini!');
+    }
 
-        $comment->delete();
-        
-        return redirect()->route('comments.index')->with('success', 'Comment deleted successfully.');
+    $post = $comment->post;
+    $comment->delete();
+
+    if (str_contains(url()->previous(), 'feeds')) {
+        return redirect()->back();
+    }
+
+    $remainingComment = $post->comments()->first();
+
+    if ($remainingComment) {
+        return redirect()->route('comments.show', $remainingComment);
+    }
+
+    return redirect()->route('comments.create', [
+        'post_id' => $post->id
+    ]);
     }
 }

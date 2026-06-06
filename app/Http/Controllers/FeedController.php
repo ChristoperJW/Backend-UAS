@@ -11,7 +11,7 @@ class FeedController extends Controller
 {
     public function index()
     {
-        $posts = Post::with(['user', 'comments'])->inRandomOrder()->take(3)->get();
+        $posts = Post::with(['user', 'comments.user'])->inRandomOrder()->take(3)->get();
 
     foreach ($posts as $post) {
         Feed::firstOrCreate(['post_id' => $post->id]);
@@ -22,13 +22,14 @@ class FeedController extends Controller
 
     public function comment(Request $request, Post $post)
     {
-    $request->validate(['content' => 'required|string']);
+    $request->validate(['komentar' => 'required|string']);
 
     Comment::create([
-        'content' => $request->content,
-        'user_id' => auth()->id(),
+        'content' => $request->komentar,
+        'user_id' => session('current_user_id'),
         'post_id' => $post->id,
     ]);
-    }
 
+    return redirect()->route('feeds.index');
+    }
 }

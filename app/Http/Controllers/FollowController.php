@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Follow;
 use Illuminate\Http\Request;
+use App\Http\Controllers\NotificationController;
 
 class FollowController extends Controller
 {
@@ -118,6 +119,9 @@ class FollowController extends Controller
                 'follower_id' => $currentUserId,
                 'following_id' => $id
             ]);
+
+            NotificationController::create(
+            $id, $currentUserId, 'follow');
         }
 
         return back()

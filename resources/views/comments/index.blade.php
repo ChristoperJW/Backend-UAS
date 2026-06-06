@@ -10,7 +10,7 @@
         @foreach ($posts as $post)
         <tr>
             <td>{{ $post->user->name ?? '-' }}</td>
-            <td>{{ $post->caption }}</td>
+            <td><img src="{{ asset('images/' . $post->media) }}" width="150"></td>
             <td>
                 @if ($post->comments->count() > 0)
                     <a href="{{ route('comments.show', $post->comments->first()) }}">
@@ -27,4 +27,4 @@
         <br>
     </tbody>
 </table>
-<a href="/">Kembali ke Homepage</a>
+<a href="/">Back to Homepage</a>

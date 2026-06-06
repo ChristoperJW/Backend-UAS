@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Like;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use App\Http\Controllers\NotificationController;
 
 class LikeController extends Controller
 {
@@ -23,6 +24,9 @@ class LikeController extends Controller
             'user_id' => $this->currentUserId(),
             'post_id' => $post->id,
         ]);
+
+        NotificationController::create(
+        $post->user_id, $this->currentUserId(), 'like', $post->id);
 
         return redirect()->route('posts.show', $post)->with('success', 'Post Liked');
     }

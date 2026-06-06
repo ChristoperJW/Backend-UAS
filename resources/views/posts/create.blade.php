@@ -19,6 +19,7 @@
     Media:
     <br>
     <input type="text" name="media" value="{{ old('media') }}">
+    
     <br><br>
 
     Hashtags:
