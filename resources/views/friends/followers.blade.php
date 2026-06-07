@@ -15,6 +15,10 @@
 
         <strong>{{ $user->name }}</strong>
 
+        <a href="{{ route('users.profile', $user->id) }}">
+            View Profile
+        </a>
+
     </div>
 
     @empty

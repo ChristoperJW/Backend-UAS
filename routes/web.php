@@ -56,6 +56,9 @@ Route::post('/friends/{id}/unfollow', [FollowController::class, 'unfollowWeb'])
 
 Route::get('/friends/discover', [FriendsController::class, 'discover']);
 
+Route::get('/users/{id}/profile', [FriendsController::class, 'profile'])
+    ->name('users.profile');
+
 Route::resource('posts', PostController::class);
 
 Route::post('/posts/{post}/like', [LikeController::class, 'store'])->name('posts.like');

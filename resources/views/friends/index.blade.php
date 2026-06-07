@@ -156,6 +156,12 @@
                     <strong>{{ $user->name }}</strong>
                     <p>{{ $user->email }}</p>
 
+                    <a href="{{ route('users.profile', $user->id) }}">
+                        View Profile
+                    </a>
+
+                    <br><br>
+
                     @if($followedUsers->contains($user->id))
                         <form action="{{ route('friends.unfollow', $user->id) }}" method="POST">
                             @csrf
@@ -186,6 +192,11 @@
         @forelse($suggestions as $user)
             <div class="user-card">
                 <strong>{{ $user->name }}</strong>
+                <br><br>
+
+                <a href="{{ route('users.profile', $user->id) }}">
+                    View profile
+                </a>
 
                 <form action="{{ route('friends.follow', $user->id) }}" method="POST" style="margin-top: 10px;">
                     @csrf
