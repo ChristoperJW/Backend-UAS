@@ -20,6 +20,12 @@ class AccountController extends Controller
         return redirect('/')->with('error', 'Something went wrong.');
     }
 
+    public function indexUpdate()
+    {
+        return view('updateacc');
+    }
+
+
     public function updateAccount(Request $request)
     {
         $currentUserId = session('current_user_id');
@@ -27,16 +33,24 @@ class AccountController extends Controller
 
         if ($user) {
             $request->validate([
-                'name' => 'required|string|max:255',
+                'name' => 'nullable|string|max:255',
                 'email' => 'required|email|unique:users,email,' . $user->id,
-                'password' => 'nullable|min:4'
+                'old_password' => 'required|min:4',
+                'new_password' => 'required|min:4',
             ]);
 
             $user->name = $request->name;
             $user->email = $request->email;
 
-            if ($request->password) {
-                $user->password = Hash::make($request->password);
+            if ($request->new_password) {
+                if (!Hash::check($request->old_password, $user->password)) {
+                    return back()->with('error', 'The provided password does not match your current password.');
+                }
+                $user->password = Hash::make($request->new_password);
+            }
+
+            if ($request->old_password == $request->new_password) {
+                return back()->with('error', 'New password cannot be the same as the current password.');
             }
 
             $user->save();

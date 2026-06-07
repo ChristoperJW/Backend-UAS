@@ -34,7 +34,9 @@ Route::get('/account',function(){
     
     return view('account');
 });
-Route::post('/account/delete', [AccountController::class, 'deleteAccount'])->name('account.delete');
+Route::post('/account/delete', [AccountController::class, 'deleteAccount']);
+Route::get('/account/update', [AccountController::class, 'indexUpdate']);
+Route::post('/account/update', [AccountController::class, 'updateAccount']);
 
 Route::get('/switch-user/{id}',
     [FriendsController::class, 'switchUser']);
