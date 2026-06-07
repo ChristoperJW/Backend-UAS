@@ -18,6 +18,8 @@
                 <br><input type="email" name="email" required placeholder="Enter your email"><br>
                 <label>Password</label>
                 <br><input type="password" name="password" required placeholder="Enter your password"><br>
+                <label>Confirm Password</label>
+                <br><input type="password" name="password_confirmation" required placeholder="Confirm your password"><br>
                 <br><button type="submit">Register</button><br>
                 <button type="button" onclick="window.location.href='/login'">Back to Login</button>
                 </form>
