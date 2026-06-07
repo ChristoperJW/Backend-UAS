@@ -45,8 +45,13 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:4' 
+            'password' => 'required|min:4' ,
+            'password_confirmation' => 'required|same:password'
         ]);
+
+        if ($request->password !== $request->password_confirmation) {
+            return back()->with('error', 'Password confirmation does not match.');
+        }
 
         $user = User::create([
             'name' => $request->name,
