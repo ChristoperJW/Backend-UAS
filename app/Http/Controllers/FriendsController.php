@@ -106,4 +106,31 @@ class FriendsController extends Controller
 
         return view('friends.discover', compact('discoverUsers'));
     }
+
+    public function profile($id)
+    {
+        if (!session()->has('current_user_id')) {
+            return redirect('/login')->with('error', 'Please log in first');
+        }
+
+        $currentUserId = session('current_user_id');
+
+        $user = User::findOrFail($id);
+
+        $followersCount = Follow::where('following_id', $id)->count();
+
+        $followingCount = Follow::where('follower_id', $id)->count();
+
+        $isFollowing = Follow::where('follower_id', $currentUserId)
+            ->where('following_id', $id)
+            ->exists();
+
+        return view('friends.profile', compact(
+            'user',
+            'followersCount',
+            'followingCount',
+            'isFollowing',
+            'currentUserId'
+        ));
+    }
 }

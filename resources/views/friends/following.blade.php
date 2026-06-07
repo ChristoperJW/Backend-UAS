@@ -15,6 +15,10 @@
 
             <strong>{{ $user->name }}</strong>
 
+            <a href="{{ route('users.profile', $user->id) }}">
+                View Profile
+            </a>
+
             <form action="{{ route('friends.unfollow', $user->id) }}"
                   method="POST"
                   style="display:inline;">
