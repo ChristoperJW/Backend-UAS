@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::table('messages', function (Blueprint $table) {
             $table->boolean('deleted_by_sender')->default(false);
-            $table->boolean('deleted_by_receiver')->default(false);
+            $table->boolean('deleted_by_receiver')->default(false)->after('deleted_by_sender');
         });
     }
 

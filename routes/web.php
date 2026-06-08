@@ -46,9 +46,11 @@ Route::get('/friends/following', [FriendsController::class, 'following']);
 Route::post('/friends/{id}/follow', [FollowController::class, 'followWeb'])->name('friends.follow');
 Route::post('/friends/{id}/unfollow', [FollowController::class, 'unfollowWeb'])->name('friends.unfollow');
 Route::get('/friends/discover', [FriendsController::class, 'discover']);
-
-Route::get('/users/{id}/profile', [FriendsController::class, 'profile'])
-    ->name('users.profile');
+Route::post('/account/privacy', [AccountController::class, 'updatePrivacy']);
+Route::get('/friends/requests', [FriendsController::class, 'requests'])->name('friends.request');
+Route::post('/friends/requests/{id}/accept', [FollowController::class, 'acceptRequest'])->name('friends.requests.accept');
+Route::post('/friends/requests/{id}/reject', [FollowController::class, 'rejectRequest'])->name('friends.requests.reject');
+Route::get('/users/{id}/profile', [FriendsController::class, 'profile'])->name('users.profile');
 
 Route::resource('posts', PostController::class);
 

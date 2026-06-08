@@ -15,6 +15,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'require_follow_approval',
     ];
 
     protected $hidden = [

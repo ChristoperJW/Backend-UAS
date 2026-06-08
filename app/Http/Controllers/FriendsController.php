@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Follow;
+use App\Models\FollowRequest;
 
 class FriendsController extends Controller
 {
@@ -132,5 +133,22 @@ class FriendsController extends Controller
             'isFollowing',
             'currentUserId'
         ));
+    }
+
+    public function requests()
+    {
+        if (!session()->has('current_user_id')) {
+            return redirect('/login')->with('error', 'Please log in first.');
+        }
+
+        $currentUserId = session('current_user_id');
+
+        $followRequests = FollowRequest::with('sender')
+            ->where('receiver_id', $currentUserId)
+            ->where('status', 'pending')
+            ->latest()
+            ->get();
+
+        return view('friends.requests', compact('followRequests'));
     }
 }

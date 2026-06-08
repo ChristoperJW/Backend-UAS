@@ -98,6 +98,7 @@
             <a href="/friends/followers">Followers</a>
             <a href="/friends/following">Following</a>
             <a href="/friends/discover">Discover</a>
+            <a href="/friends/requests">Requests</a>
         </div>
 
         <h1>Friends</h1>
