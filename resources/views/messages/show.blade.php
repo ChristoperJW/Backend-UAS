@@ -3,65 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Messages - Postify</title>
+    <title>Chat - Postify</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gray-100 p-6">
-    <div class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-md">
-        <div class="mb-4">
-            <a href="/messages" class="inline-flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-semibold transition-colors">
-                &larr; Kembali ke Daftar Obrolan
-            </a>
+<body class="bg-gray-50 h-screen flex flex-col font-sans">
+    <nav class="bg-white shadow-sm border-b border-gray-200 px-6 py-4 flex items-center gap-4 sticky top-0 z-50">
+        <a href="{{ route('messages.getConversations') }}" class="text-gray-500 hover:text-blue-600 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        </a>
+        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm">
+            {{ strtoupper(substr($receiver->name, 0, 1)) }}
         </div>
-        <hr class="border-gray-300 mb-6">
+        <h1 class="text-xl font-bold text-gray-800">{{ $receiver->name }}</h1>
+    </nav>
 
-        <h3 class="text-xl font-bold mb-4 text-gray-800">Obrolan dengan 
-        @if($receiver->id == session('current_user_id'))
-            Diri Sendiri (Catatan Pribadi)
-        @else
-            {{ $receiver->name }}
-        @endif
-        </h3>
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 max-w-3xl mx-auto w-full" id="chat-container">
+        <div class="flex flex-col gap-3">
+            @php $lastDate = null; @endphp
+            
+            @foreach($messages as $message)
+                @php
+                    $currentDate = $message->created_at->format('Y-m-d');
+                    $displayDate = $message->created_at->isToday() ? 'Hari Ini' : ($message->created_at->isYesterday() ? 'Kemarin' : $message->created_at->format('d M Y'));
+                @endphp
 
-        <div class="mb-4">
-            {{ $messages->links() }}
-        </div>
-
-        <div class="max-h-[500px] overflow-y-auto p-4 bg-gray-50 rounded-lg mb-4 flex flex-col border border-gray-100">
-            @forelse($messages as $message)
-                <div class="max-w-[70%] p-3 mb-3 rounded-2xl text-sm break-words flex flex-col shadow-sm {{ $message->sender_id === session('current_user_id') ? 'bg-blue-600 text-white ml-auto rounded-br-sm' : 'bg-white text-gray-800 border border-gray-200 mr-auto rounded-bl-sm' }}">
-                    <span>
-                        <strong class="{{ $message->sender_id === session('current_user_id') ? 'text-blue-200' : 'text-gray-900' }}">{{ $message->sender_id === session('current_user_id') ? 'Anda' : $receiver->name }}:</strong> 
-                        {{ $message->content }}
-                    </span>
-                    
-                    <div class="flex justify-between items-center mt-2 gap-4">
-                        <span class="text-[10px] {{ $message->sender_id === session('current_user_id') ? 'text-blue-200' : 'text-gray-400' }}">
-                            {{ $message->created_at->diffForHumans() }}
+                @if($lastDate !== $currentDate)
+                    <div class="flex justify-center my-4">
+                        <span class="bg-gray-200 text-gray-600 text-xs font-bold px-4 py-1.5 rounded-full shadow-sm">
+                            {{ $displayDate }}
                         </span>
-
-                        @if($message->sender_id === session('current_user_id'))
-                            <form action="{{ route('messages.removeMessage', $message->id) }}" method="POST" class="inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-[10px] text-blue-200 hover:text-red-300 uppercase tracking-wider font-semibold">Hapus</button>
-                            </form>
-                        @endif
                     </div>
-                </div>
-            @empty
-                <div class="text-center py-8 text-gray-500">
-                    Belum ada pesan. Ketik sesuatu untuk memulai!
-                </div>
-            @endforelse
-        </div>
+                    @php $lastDate = $currentDate; @endphp
+                @endif
 
-        <form action="{{ route('messages.sendMessage') }}" method="POST" class="flex gap-2">
+                @if($message->sender_id === session('current_user_id'))
+                    <div class="flex justify-end items-center gap-2 group w-full relative">
+                        <div class="opacity-0 group-hover:opacity-100 transition-opacity shrink-0 relative">
+                            <button onclick="toggleMenu('menu-{{ $message->id }}')" class="p-2 text-gray-400 bg-white hover:text-red-500 hover:bg-red-50 rounded-full transition-colors shadow-sm border border-gray-100" title="Opsi Pesan">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+
+                            <div id="menu-{{ $message->id }}" class="hidden absolute right-full mr-2 top-0 w-48 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50">
+                                <form action="{{ route('messages.removeMessage', $message->id) }}" method="POST" class="m-0">
+                                    @csrf
+                                    @method('DELETE')
+                                    <input type="hidden" name="type" value="for_me">
+                                    <button type="submit" class="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-50">Hapus untuk Saya</button>
+                                </form>
+                                <form action="{{ route('messages.removeMessage', $message->id) }}" method="POST" class="m-0">
+                                    @csrf
+                                    @method('DELETE')
+                                    <input type="hidden" name="type" value="for_everyone">
+                                    <button type="submit" class="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors border-b border-gray-50 font-medium">Hapus untuk Semua</button>
+                                </form>
+                                <button onclick="toggleMenu('menu-{{ $message->id }}')" class="w-full text-left px-4 py-3 text-sm text-gray-500 hover:bg-gray-50 transition-colors">Batal</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-600 text-white px-4 py-2.5 rounded-2xl rounded-tr-sm shadow-sm max-w-[75%] sm:max-w-md flex flex-col">
+                            <p class="text-sm text-left break-words">{{ $message->content }}</p>
+                            <div class="flex items-center justify-end gap-1.5 mt-1">
+                                <span class="text-[10px] text-blue-100">{{ $message->created_at->format('H:i') }}</span>
+                                <span class="{{ $message->is_read ? 'text-white' : 'text-blue-300' }}">
+                                    @if($message->is_read)
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 12l4 4L16 8m-4 8l4 4L22 10"></path></svg>
+                                    @else
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                                    @endif
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                @else
+                    <div class="flex justify-start items-center gap-2 group w-full relative">
+                        <div class="bg-white border border-gray-200 text-gray-800 px-4 py-2.5 rounded-2xl rounded-tl-sm shadow-sm max-w-[75%] sm:max-w-md flex flex-col">
+                            <p class="text-sm text-left break-words">{{ $message->content }}</p>
+                            <span class="text-[10px] text-gray-400 mt-1 text-right block">{{ $message->created_at->format('H:i') }}</span>
+                        </div>
+                        
+                        <div class="opacity-0 group-hover:opacity-100 transition-opacity shrink-0 relative">
+                            <button onclick="toggleMenu('menu-{{ $message->id }}')" class="p-2 text-gray-400 bg-white hover:text-gray-600 hover:bg-gray-50 rounded-full transition-colors shadow-sm border border-gray-100" title="Opsi Pesan">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path></svg>
+                            </button>
+
+                            <div id="menu-{{ $message->id }}" class="hidden absolute left-full ml-2 top-0 w-48 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50">
+                                <form action="{{ route('messages.removeMessage', $message->id) }}" method="POST" class="m-0">
+                                    @csrf
+                                    @method('DELETE')
+                                    <input type="hidden" name="type" value="for_me">
+                                    <button type="submit" class="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-50">Hapus untuk Saya</button>
+                                </form>
+                                <button onclick="toggleMenu('menu-{{ $message->id }}')" class="w-full text-left px-4 py-3 text-sm text-gray-500 hover:bg-gray-50 transition-colors">Batal</button>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            @endforeach
+        </div>
+    </main>
+
+    <div class="bg-white border-t border-gray-200 p-4 sticky bottom-0 z-50">
+        <form action="{{ route('messages.sendMessage') }}" method="POST" class="max-w-3xl mx-auto flex gap-3 items-center">
             @csrf
             <input type="hidden" name="receiver_id" value="{{ $receiver->id }}">
-            <input type="text" name="content" class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Ketik pesan..." required autocomplete="off">
-            <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors">Kirim</button>
+            <input type="text" name="content" class="flex-1 border border-gray-300 rounded-full px-5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 bg-gray-50 text-sm" placeholder="Ketik pesan..." required autocomplete="off">
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full transition-colors shadow-sm w-12 h-12 flex items-center justify-center shrink-0">
+                <svg class="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
+            </button>
         </form>
     </div>
+
+    <script>
+        function toggleMenu(menuId) {
+            document.querySelectorAll('[id^="menu-"]').forEach(menu => {
+                if (menu.id !== menuId) {
+                    menu.classList.add('hidden');
+                }
+            });
+            
+            const menu = document.getElementById(menuId);
+            menu.classList.toggle('hidden');
+        }
+
+        document.addEventListener('click', function(event) {
+            const isClickInsideMenu = event.target.closest('[id^="menu-"]');
+            const isClickOnButton = event.target.closest('button[onclick^="toggleMenu"]');
+            
+            if (!isClickInsideMenu && !isClickOnButton) {
+                document.querySelectorAll('[id^="menu-"]').forEach(menu => {
+                    menu.classList.add('hidden');
+                });
+            }
+        });
+    </script>
 </body>
 </html>

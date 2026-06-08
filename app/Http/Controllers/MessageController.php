@@ -27,24 +27,56 @@ class MessageController extends Controller
         }
         
         $activeChats = $conversations->values();
-        $allUsers = User::where('id', '!=', $userId)->orderBy('name', 'asc')->get();
+        $allUsers = User::orderBy('name', 'asc')->get();
 
         return view('messages.index', compact('activeChats', 'allUsers'));
     }
 
+    public function searchUsers(Request $request)
+    {
+        $search = $request->query('q');
+        
+        if (!$search) {
+            return response()->json([]);
+        }
+
+        $users = User::where('name', 'like', '%' . $search . '%')
+                    ->orderBy('name', 'asc')
+                    ->limit(10)
+                    ->get(['id', 'name']);
+
+        return response()->json($users);
+    }
+
     public function createConversation(Request $request)
     {
-        $request->validate(['receiver_id' => 'required|exists:users,id']);
-        return redirect()->route('messages.getMessages', $request->receiver_id);
+        $request->validate([
+            'name' => 'required|exists:users,name'
+        ]);
+
+        $receiver = User::where('name', $request->name)->first();
+
+        return redirect()->route('messages.getMessages', $receiver->id);
     }
 
     public function getMessages($userId)
     {
         $receiver = User::findOrFail($userId);
-        $messages = Message::where(function($q) use ($userId) {
-            $q->where('sender_id', session('current_user_id'))->where('receiver_id', $userId);
-        })->orWhere(function($q) use ($userId) {
-            $q->where('sender_id', $userId)->where('receiver_id', session('current_user_id'));
+        $currentUserId = session('current_user_id');
+
+        Message::where('sender_id', $userId)
+            ->where('receiver_id', $currentUserId)
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+
+        $messages = Message::where(function($q) use ($userId, $currentUserId) {
+            $q->where('sender_id', $currentUserId)
+              ->where('receiver_id', $userId)
+              ->where('deleted_by_sender', false);
+        })->orWhere(function($q) use ($userId, $currentUserId) {
+            $q->where('sender_id', $userId)
+              ->where('receiver_id', $currentUserId)
+              ->where('deleted_by_receiver', false);
         })->orderBy('created_at', 'asc')->paginate(50);
 
         return view('messages.show', compact('receiver', 'messages'));
@@ -77,11 +109,24 @@ class MessageController extends Controller
         return redirect()->route('messages.getConversations');
     }
 
-    public function removeMessage($messageId)
+    public function removeMessage(Request $request, $messageId)
     {
         $message = Message::findOrFail($messageId);
-        if ($message->sender_id === session('current_user_id')) {
-            $message->delete();
+        $currentUserId = session('current_user_id');
+
+        if ($request->type === 'for_everyone') {
+            if ($message->sender_id == $currentUserId) {
+                $message->delete();
+            }
+        } else {
+            if ($message->sender_id == $currentUserId) {
+                $message->deleted_by_sender = true;
+            }
+            
+            if ($message->receiver_id == $currentUserId) {
+                $message->deleted_by_receiver = true;
+            }
+            $message->save();
         }
         return back();
     }
