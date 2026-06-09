@@ -75,4 +75,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Post::class, 'post_user_tags');
     }
-} 
+
+    public function groups()
+    {
+        return $this->hasManyThrough(Group::class, GroupMember::class, 'user_id', 'id', 'id', 'group_id');
+    }
+}

@@ -63,7 +63,7 @@
                         <div class="bg-blue-600 text-white px-4 py-2.5 rounded-2xl rounded-tr-sm shadow-sm max-w-[75%] sm:max-w-md flex flex-col">
                             <p class="text-sm text-left break-words">{{ $message->content }}</p>
                             <div class="flex items-center justify-end gap-1.5 mt-1">
-                                <span class="text-[10px] text-blue-100">{{ $message->created_at->format('H:i') }}</span>
+                                <span class="chat-time text-[10px] text-blue-100" data-timestamp="{{ $message->created_at->toIso8601String() }}"></span>
                                 <span class="{{ $message->is_read ? 'text-white' : 'text-blue-300' }}">
                                     @if($message->is_read)
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 12l4 4L16 8m-4 8l4 4L22 10"></path></svg>
@@ -78,7 +78,7 @@
                     <div class="flex justify-start items-center gap-2 group w-full relative">
                         <div class="bg-white border border-gray-200 text-gray-800 px-4 py-2.5 rounded-2xl rounded-tl-sm shadow-sm max-w-[75%] sm:max-w-md flex flex-col">
                             <p class="text-sm text-left break-words">{{ $message->content }}</p>
-                            <span class="text-[10px] text-gray-400 mt-1 text-right block">{{ $message->created_at->format('H:i') }}</span>
+                            <span class="chat-time text-[10px] text-gray-400 mt-1 text-right block" data-timestamp="{{ $message->created_at->toIso8601String() }}"></span>
                         </div>
                         
                         <div class="opacity-0 group-hover:opacity-100 transition-opacity shrink-0 relative">
@@ -134,6 +134,18 @@
                     menu.classList.add('hidden');
                 });
             }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const timeElements = document.querySelectorAll('.chat-time');
+            
+            timeElements.forEach(el => {
+                const timestamp = el.getAttribute('data-timestamp');
+                if (timestamp) {
+                    const date = new Date(timestamp);
+                    el.textContent = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                }
+            });
         });
     </script>
 </body>

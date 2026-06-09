@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FeedController;
 use App\Http\Controllers\FriendsController;
@@ -89,6 +90,10 @@ Route::group(['middleware' => function ($request, $next) {
     Route::post('/friends/requests/{id}/accept', [FollowController::class, 'acceptRequest'])->name('friends.requests.accept');
     Route::post('/friends/requests/{id}/reject', [FollowController::class, 'rejectRequest'])->name('friends.requests.reject');
     Route::get('/users/{id}/profile', [FriendsController::class, 'profile'])->name('users.profile');
+    Route::get('/groups/create', [GroupController::class, 'create'])->name('groups.create');
+    Route::post('/groups/store', [GroupController::class, 'store'])->name('groups.store');
+    Route::get('/groups/{id}', [GroupController::class, 'show'])->name('groups.show');
+    Route::post('/groups/{id}/send', [GroupController::class, 'sendMessage'])->name('groups.sendMessage');
 });
 
 Route::get('/feeds', [FeedController::class, 'index'])->name('feeds.index');

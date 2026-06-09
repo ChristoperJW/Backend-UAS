@@ -11,11 +11,18 @@ class Message extends Model
     use HasFactory;
 
     protected $fillable = [
-        'sender_id',
-        'receiver_id',
-        'content',
-        'read_at',
+        'sender_id', 
+        'receiver_id', 
+        'group_id', 
+        'content', 
+        'is_read', 
+        'read_at'
     ];
+
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
+    }
 
     public function sender(): BelongsTo
     {
