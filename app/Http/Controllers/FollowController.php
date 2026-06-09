@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Follow;
 use Illuminate\Http\Request;
 use App\Http\Controllers\NotificationController;
+use App\Models\FollowRequest;
 
 class FollowController extends Controller
 {
@@ -110,22 +111,46 @@ class FollowController extends Controller
     {
         $currentUserId = session('current_user_id', 1);
 
+        if ($currentUserId == $id) {
+            return back()->with('error', 'You cannot follow yourself.');
+        }
+
         $alreadyFollowed = Follow::where('follower_id', $currentUserId)
             ->where('following_id', $id)
             ->exists();
 
-        if (!$alreadyFollowed) {
-            Follow::create([
-                'follower_id' => $currentUserId,
-                'following_id' => $id
-            ]);
-
-            NotificationController::create(
-            $id, $currentUserId, 'follow');
+        if ($alreadyFollowed) {
+            return back()->with('success', 'You already followed this user.');
         }
 
-        return back()
-            ->with('success', 'User followed successfully');
+        $targetUser = User::find($id);
+
+        if (!$targetUser) {
+            return back()->with('error', 'User not found.');
+        }
+
+        if ($targetUser->require_follow_approval) {
+            FollowRequest::firstOrCreate(
+                [
+                    'sender_id' => $currentUserId,
+                    'receiver_id' => $id,
+                ],
+                [
+                    'status' => 'pending',
+                ]
+            );
+
+            return back()->with('success', 'Follow request sent.');
+        }
+
+        Follow::create([
+            'follower_id' => $currentUserId,
+            'following_id' => $id
+        ]);
+
+        NotificationController::create($id, $currentUserId, 'follow');
+
+        return back()->with('success', 'User followed successfully');
     }
 
     public function unfollowWeb($id)
@@ -138,5 +163,40 @@ class FollowController extends Controller
 
         return back()
             ->with('success', 'User unfollowed successfully');
+    }
+
+    public function acceptRequest($id)
+    {
+        $currentUserId = session('current_user_id');
+
+        $request = FollowRequest::where('id', $id)
+            ->where('receiver_id', $currentUserId)
+            ->where('status', 'pending')
+            ->firstOrFail();
+
+        Follow::firstOrCreate([
+            'follower_id' => $request->sender_id,
+            'following_id' => $request->receiver_id,
+        ]);
+
+        $request->status = 'accepted';
+        $request->save();
+
+        return back()->with('success', 'Follow request accepted.');
+    }
+
+    public function rejectRequest($id)
+    {
+        $currentUserId = session('current_user_id');
+
+        $request = FollowRequest::where('id', $id)
+            ->where('receiver_id', $currentUserId)
+            ->where('status', 'pending')
+            ->firstOrFail();
+
+        $request->status = 'rejected';
+        $request->save();
+
+        return back()->with('success', 'Follow request rejected.');
     }
 }

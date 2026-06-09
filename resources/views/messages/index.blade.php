@@ -10,9 +10,15 @@
     <div class="max-w-4xl mx-auto py-10 px-4">
         <div class="flex justify-between items-center mb-8">
             <h1 class="text-3xl font-bold text-gray-800">Kotak Masuk</h1>
-            <a href="/" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 font-medium transition-colors shadow-sm">
-                Ke Beranda
-            </a>
+            <div class="flex gap-3">
+                <a href="/" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 font-medium transition-colors shadow-sm">
+                    Ke Beranda
+                </a>
+                <a href="{{ route('groups.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-sm transition-colors flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    Buat Grup
+                </a>
+            </div>
         </div>
 
         <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-8 relative z-50">
@@ -36,13 +42,45 @@
             </div>
         </div>
 
+        {{-- DAFTAR GRUP AKTIF --}}
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 relative z-10 mb-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-6">Grup Aktif</h2>
+            <div class="flex flex-col gap-3">
+                @if(isset($groups) && $groups->count() > 0)
+                    @foreach($groups as $group)
+                        <div class="flex items-center justify-between p-4 bg-gray-50 hover:bg-blue-50/50 rounded-xl border border-gray-200 transition-colors group">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-sm">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-gray-800 group-hover:text-blue-700 transition-colors">{{ $group->name }}</h3>
+                                    <p class="text-xs text-gray-500 mt-1">{{ $group->members->count() }} Anggota</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-3">
+                                <a href="{{ route('groups.show', $group->id) }}" class="px-5 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 font-semibold transition-colors shadow-sm">
+                                    Buka Grup
+                                </a>
+                            </div>
+                        </div>
+                    @endforeach
+                @else
+                    <div class="text-center py-6">
+                        <p class="text-gray-500 text-sm font-medium">Belum ada grup yang diikuti.</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        {{-- DAFTAR PESAN PERSONAL (1v1) --}}
         <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 relative z-10">
-            <h2 class="text-xl font-semibold text-gray-800 mb-6">Pesan Aktif</h2>
+            <h2 class="text-xl font-semibold text-gray-800 mb-6">Pesan Personal</h2>
             <div class="flex flex-col gap-3">
                 @forelse($activeChats as $chatUser)
                     <div class="flex items-center justify-between p-4 bg-gray-50 hover:bg-blue-50/50 rounded-xl border border-gray-200 transition-colors group">
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-sm">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-sm">
                                 {{ strtoupper(substr($chatUser->name, 0, 1)) }}
                             </div>
                             <div>
@@ -63,9 +101,8 @@
                         </div>
                     </div>
                 @empty
-                    <div class="text-center py-12">
-                        <p class="text-gray-500 text-lg font-medium">Belum ada percakapan aktif.</p>
-                        <p class="text-gray-400 text-sm mt-1">Cari nama pengguna di atas untuk memulai obrolan!</p>
+                    <div class="text-center py-6">
+                        <p class="text-gray-500 text-sm font-medium">Belum ada obrolan personal aktif.</p>
                     </div>
                 @endforelse
             </div>

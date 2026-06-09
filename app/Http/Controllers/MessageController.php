@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Message;
 use App\Models\User;
+use App\Models\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,16 +21,23 @@ class MessageController extends Controller
 
         $conversations = collect();
         foreach ($messages as $message) {
-            $otherUserId = $message->sender_id === $userId ? $message->receiver_id : $message->sender_id;
-            if (!$conversations->has($otherUserId)) {
-                $conversations->put($otherUserId, User::find($otherUserId));
+            if (is_null($message->group_id)) {
+                $otherUserId = $message->sender_id === $userId ? $message->receiver_id : $message->sender_id;
+                
+                if (!$conversations->has($otherUserId) && !is_null($otherUserId)) {
+                    $conversations->put($otherUserId, User::find($otherUserId));
+                }
             }
         }
         
         $activeChats = $conversations->values();
         $allUsers = User::orderBy('name', 'asc')->get();
 
-        return view('messages.index', compact('activeChats', 'allUsers'));
+        $groups = Group::whereHas('members', function($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })->get();
+
+        return view('messages.index', compact('activeChats', 'allUsers', 'groups'));
     }
 
     public function searchUsers(Request $request)

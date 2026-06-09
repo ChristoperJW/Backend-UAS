@@ -59,4 +59,20 @@ class AccountController extends Controller
         }
         return redirect('/account')->with('error', 'Something went wrong.');
     }
+
+    public function updatePrivacy(Request $request)
+    {
+        $currentUserId = session('current_user_id');
+
+        $user = User::find($currentUserId);
+
+        if (!$user) {
+            return redirect('/login')->with('error', 'Please log in first.');
+        }
+
+        $user->require_follow_approval = $request->has('require_follow_approval');
+        $user->save();
+
+        return redirect('/account')->with('success', 'Privacy setting updated successfully.');
+    }
 }
