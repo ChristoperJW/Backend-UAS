@@ -39,7 +39,6 @@ Route::get('/account/update', [AccountController::class, 'indexUpdate']);
 Route::post('/account/update', [AccountController::class, 'updateAccount']);
 
 
-Route::get('/switch-user/{id}', [FriendsController::class, 'switchUser']);
 Route::get('/friends', [FriendsController::class, 'index']);
 Route::get('/friends/followers', [FriendsController::class, 'followers']);
 Route::get('/friends/following', [FriendsController::class, 'following']);
@@ -77,7 +76,6 @@ Route::group(['middleware' => function ($request, $next) {
     Route::post('/messages', [MessageController::class, 'sendMessage'])->name('messages.sendMessage');
     Route::delete('/messages/conversation/{userId}', [MessageController::class, 'removeFullConversation'])->name('messages.removeFullConversation');
     Route::delete('/messages/{messageId}', [MessageController::class, 'removeMessage'])->name('messages.removeMessage');
-    Route::get('/switch-user/{id}', [FriendsController::class, 'switchUser']);
     Route::get('/friends', [FriendsController::class, 'index']);
     Route::get('/friends/followers', [FriendsController::class, 'followers']);
     Route::get('/friends/following', [FriendsController::class, 'following']);

@@ -49,12 +49,6 @@ class FriendsController extends Controller
         ));
     }
 
-    public function switchUser($id)
-    {
-        session(['current_user_id' => $id]);
-        return redirect('/friends');
-    }
-
     public function followers()
     {
         $currentUserId = session('current_user_id', 1);
