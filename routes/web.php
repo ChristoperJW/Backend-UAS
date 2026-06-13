@@ -13,6 +13,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\RepostController;
 
 Route::get('/', function () {
     if (!session()->has('current_user_id')) {

@@ -8,6 +8,10 @@
     <p>{{ session('success') }}</p>
 @endif
 
+@if (session('error'))
+    <p>{{ session('error') }}</p>
+@endif
+
 <p>
     <strong>Caption:</strong>
     <br>
@@ -38,6 +42,11 @@
 <p>
     <strong>Jumlah Komentar:</strong>
     {{ $post->comments->count() }}
+</p>
+
+<p>
+    <strong>Jumlah Repost:</strong>
+    {{ $post->reposts->count() }}
 </p>
 
 <p>
@@ -72,6 +81,12 @@
         @method('DELETE')
         <button type="submit">Unlike</button>
     </form>
+@endif
+
+@if ($post->user_id != session('current_user_id'))
+    <a href="{{ route('posts.repost.create', $post) }}">
+        <button type="button">Repost</button>
+    </a>
 @endif
 
 @php
