@@ -85,4 +85,9 @@ class User extends Authenticatable
     {
     return $this->belongsToMany(Post::class, 'favorites');
     }
+
+    public function reposts()
+    {
+    return $this->hasMany(Repost::class);
+    }
 }
