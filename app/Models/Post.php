@@ -32,4 +32,9 @@ class Post extends Model
     {
         return $this->belongsToMany(User::class, 'post_user_tags');
     }
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
 }
