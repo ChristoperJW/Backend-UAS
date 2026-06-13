@@ -3,63 +3,60 @@
 namespace App\Http\Controllers;
 
 use App\Models\Favorite;
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class FavoriteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    private function currentUserId()
+    {
+        return session('current_user_id');
+    }
+    
     public function index()
     {
-        //
+        if (!$this->currentUserId()) {
+            return redirect('/login')->with('error', 'Tolong Login Terlebih Dahulu!');
+        }
+
+        $favorites = Favorite::with([ 
+                'post.user',
+                'post.likes',
+                'post.comments',
+                'post.tags',
+                'post.taggedUsers' 
+            ])
+            ->where('user_id', $this->currentUserId())
+            ->latest()
+            ->get();
+
+        return view('favorites.index', compact('favorites'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        if (!$this->currentUserId()) {
+            return redirect('/login')->with('error', 'Tolong Login Terlebih Dahulu!');
+        }
+
+        Favorite::firstOrCreate([
+            'user_id' => $this->currentUserId(),
+            'post_id' => $post->id,
+        ]);
+
+        return back()->with('success', 'Post berhasil disimpan ke favorit.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Favorite $favorite)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Favorite $favorite)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Favorite $favorite)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Favorite $favorite)
     {
-        //
+        if (!$this->currentUserId()) {
+            return redirect('/login')->with('error', 'Tolong Login Terlebih Dahulu!');
+        }
+
+        Favorite::where('user_id', $this->currentUserId())
+            ->where('post_id', $post->id)
+            ->delete();
+
+        return back()->with('success', 'Post dihapus dari favorit.');
     }
 }
