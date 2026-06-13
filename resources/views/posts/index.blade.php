@@ -1,5 +1,7 @@
 <h1>Daftar Post</h1>
 
+<a href="{{ route('posts.my') }}">My Posts</a>
+<br><br>
 <a href="/">Kembali ke Homepage</a>
 <br><br>
 
@@ -12,9 +14,28 @@
 <form method="GET" action="{{ route('posts.index') }}">
     Cari Caption:
     <br>
-    <input type="text" name="search" value="{{ $search }}">
+    <input type="text" name="search" value="{{ $search ?? '' }}">
+
+    <br><br>
+
+    Cari Hashtag:
+    <br>
+    <select name="tag">
+        <option value="">Semua Hashtag</option>
+
+        @foreach ($tags as $item)
+            <option value="{{ $item->id }}" {{ ($tag ?? '') == $item->id ? 'selected' : '' }}>
+                #{{ $item->name }}
+            </option>
+        @endforeach
+    </select>
+
     <button type="submit">Cari</button>
 </form>
+
+<br>
+
+<a href="{{ route('posts.index') }}">Reset Filter</a>
 
 <br>
 
@@ -35,7 +56,7 @@
             <th style="width: 50px">No</th>
             <th style="width: 250px">Caption</th>
             <th style="width: 200px">Media</th>
-            <th style="width: 150px">User</th>
+            <th style="width: 150px">Posted By</th>
             <th style="width: 100px">Like</th>
             <th style="width: 220px">Aksi</th>
             <th style="width: 200px">Hashtags</th>
@@ -73,9 +94,14 @@
                 </form>
             </td>
             <td>
-                @foreach ($post->tags as $tag)
-                    #{{ $tag->name }}
-                @endforeach
+                @forelse ($post->tags as $tagItem)
+                    <a href="{{ route('posts.index', ['tag' => $tagItem->id]) }}">
+                        #{{ $tagItem->name }}
+                    </a>
+                    <br>
+                @empty
+                    Tidak ada hashtag
+                @endforelse
             </td>
             <td>
                 @foreach ($post->taggedUsers as $user)

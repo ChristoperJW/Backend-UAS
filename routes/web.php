@@ -53,8 +53,7 @@ Route::post('/friends/requests/{id}/accept', [FollowController::class, 'acceptRe
 Route::post('/friends/requests/{id}/reject', [FollowController::class, 'rejectRequest'])->name('friends.requests.reject');
 Route::get('/users/{id}/profile', [FriendsController::class, 'profile'])->name('users.profile');
 
-Route::resource('posts', PostController::class);
-
+Route::get('/my-posts', [PostController::class, 'myPosts'])->name('posts.my');
 Route::resource('posts', PostController::class);
 Route::post('/posts/{post}/like', [LikeController::class, 'store'])->name('posts.like');
 Route::delete('/posts/{post}/like', [LikeController::class, 'destroy'])->name('posts.unlike');
