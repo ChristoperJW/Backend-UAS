@@ -41,11 +41,11 @@
                 <p class="text-sm text-gray-500 font-medium">Jelajahi linimasa dan postingan terbaru</p>
             </a>
 
-            <a href="{{ route('posts.create') }}" class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 hover:border-purple-200 transition-all duration-300 group flex flex-col items-center text-center">
+            <a href="{{ route('posts.index') }}" class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-1 hover:border-purple-200 transition-all duration-300 group flex flex-col items-center text-center">
                 <div class="h-24 w-24 mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
                     <img src="{{ asset('images/post.png') }}" alt="Buat Post" class="h-full w-full object-contain drop-shadow-sm">
                 </div>
-                <h3 class="text-2xl font-bold text-gray-800 mb-2 group-hover:text-purple-600 transition-colors">Buat Post</h3>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2 group-hover:text-purple-600 transition-colors">Posts</h3>
                 <p class="text-sm text-gray-500 font-medium">Bagikan momen dan ceritamu</p>
             </a>
 

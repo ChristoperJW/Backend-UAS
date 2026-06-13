@@ -9,9 +9,9 @@
 @endif
 
 <a href="{{ route('posts.create') }}">Buat Post Baru</a>
-<br>
+<br><br>
 <a href="{{ route('posts.index') }}">Lihat Semua Post</a>
-<br>
+<br><br>
 <a href="/">Kembali ke Homepage</a>
 
 <br><br>
