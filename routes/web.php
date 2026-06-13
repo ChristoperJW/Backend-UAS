@@ -61,6 +61,10 @@ Route::delete('/posts/{post}/like', [LikeController::class, 'destroy'])->name('p
 Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
 Route::post('/posts/{post}/favorite', [FavoriteController::class, 'store'])->name('posts.favorite');
 Route::delete('/posts/{post}/favorite', [FavoriteController::class, 'destroy'])->name('posts.unfavorite');
+Route::get('/reposts', [RepostController::class, 'index'])->name('reposts.index');
+Route::get('/posts/{post}/repost', [RepostController::class, 'create'])->name('posts.repost.create');
+Route::post('/posts/{post}/repost', [RepostController::class, 'store'])->name('posts.repost');
+Route::delete('/reposts/{repost}', [RepostController::class, 'destroy'])->name('reposts.destroy');
 Route::resource('comments', CommentController::class);
 
 

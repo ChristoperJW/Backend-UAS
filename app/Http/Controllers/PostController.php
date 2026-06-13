@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\Tag;
 use App\Models\User;
 use App\Models\Favorite;
+use App\Models\Repost;
 
 class PostController extends Controller
 {
@@ -22,7 +23,7 @@ class PostController extends Controller
 
         $tags = Tag::all();
 
-        $posts = Post::with(['user', 'likes', 'comments', 'favorites', 'tags', 'taggedUsers'])
+        $posts = Post::with(['user', 'likes', 'comments', 'favorites', 'reposts', 'tags', 'taggedUsers'])
             ->when($search, function ($query) use ($search) {
                 return $query->where('caption', 'like', '%' . $search . '%');
         })
@@ -83,7 +84,7 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
-        $post->load(['user', 'likes', 'comments', 'favorites', 'tags', 'taggedUsers']);
+        $post->load(['user', 'likes', 'comments', 'favorites', 'reposts', 'tags', 'taggedUsers']);
 
         return view('posts.show', compact('post'));
     }
@@ -150,7 +151,7 @@ class PostController extends Controller
         return redirect('/login')->with('error', 'Tolong Login Terlebih Dahulu!');
     }
 
-    $posts = Post::with(['user', 'likes', 'comments', 'favorites', 'tags', 'taggedUsers'])
+    $posts = Post::with(['user', 'likes', 'comments', 'reposts', 'favorites', 'tags', 'taggedUsers'])
         ->where('user_id', $this->currentUserId())
         ->latest()
         ->get();
