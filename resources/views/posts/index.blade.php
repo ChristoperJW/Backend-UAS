@@ -1,3 +1,7 @@
+<a href="/">
+    <img src="{{ asset('images/Postify.png') }}" alt="Postify" width="300">
+</a>
+
 <h1>Daftar Post</h1>
 
 <a href="{{ route('posts.my') }}">My Posts</a>
@@ -37,7 +41,7 @@
 
 <a href="{{ route('posts.index') }}">Reset Filter</a>
 
-<br>
+<br><br>
 
 @if (session('success'))
     <p>{{ session('success') }}</p>

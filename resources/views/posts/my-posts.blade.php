@@ -1,3 +1,7 @@
+<a href="/">
+    <img src="{{ asset('images/Postify.png') }}" alt="Postify" width="300">
+</a>
+
 <h1>My Posts</h1>
 
 @if (session('success'))
