@@ -21,7 +21,7 @@ class PostController extends Controller
 
         $tags = Tag::all();
 
-        $posts = Post::with(['user', 'likes', 'tags', 'taggedUsers']) 
+        $posts = Post::with(['user', 'likes', 'comments', 'tags', 'taggedUsers']) 
             ->when($search, function ($query) use ($search) {
                 return $query->where('caption', 'like', '%' . $search . '%');
         })
@@ -82,7 +82,7 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
-        $post->load(['user', 'likes', 'tags', 'taggedUsers']);
+        $post->load(['user', 'likes', 'comments', 'tags', 'taggedUsers']);
 
         return view('posts.show', compact('post'));
     }
@@ -149,7 +149,7 @@ class PostController extends Controller
         return redirect('/login')->with('error', 'Tolong Login Terlebih Dahulu!');
     }
 
-    $posts = Post::with(['user', 'likes', 'tags', 'taggedUsers'])
+    $posts = Post::with(['user', 'likes', 'comments', 'tags', 'taggedUsers'])
         ->where('user_id', $this->currentUserId())
         ->latest()
         ->get();

@@ -36,7 +36,12 @@
 </p>
 
 <p>
-    <strong>Hashtags:</strong>
+    <strong>Jumlah Komentar:</strong>
+    {{ $post->comments->count() }}
+</p>
+
+<p>
+    <strong>Hashtags:</strong> // 
     <br>
     @foreach ($post->tags as $tag)
         #{{ $tag->name }}

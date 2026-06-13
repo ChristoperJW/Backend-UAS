@@ -1,5 +1,5 @@
 <a href="/">
-    <img src="{{ asset('images/Postify.png') }}" alt="Postify" width="300">
+    <img src="{{ asset('images/Postify.png') }}" alt="Postify" width="250">
 </a>
 
 <h1>Daftar Post</h1>
@@ -61,7 +61,8 @@
             <th style="width: 250px">Caption</th>
             <th style="width: 200px">Media</th>
             <th style="width: 150px">Posted By</th>
-            <th style="width: 100px">Like</th>
+            <th style="width: 80px">Like</th>
+            <th style="width: 100px">Komentar</th>
             <th style="width: 220px">Aksi</th>
             <th style="width: 200px">Hashtags</th>
             <th style="width: 200px">Tagged Users</th>
@@ -86,6 +87,7 @@
                 
             </td>
             <td style="text-align: center">{{ $post->likes->count() }}</td>
+            <td style="text-align: center">{{ $post->comments->count()}}</td>
             <td style="text-align: center">
                 <a href="{{ route('posts.show', $post) }}">Detail</a>
                 |
