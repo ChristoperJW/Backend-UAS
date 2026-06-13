@@ -1,5 +1,7 @@
 <h1>Daftar Post</h1>
 
+<a href="{{ route('posts.my') }}">My Posts</a>
+<br><br>
 <a href="/">Kembali ke Homepage</a>
 <br><br>
 
@@ -35,7 +37,7 @@
             <th style="width: 50px">No</th>
             <th style="width: 250px">Caption</th>
             <th style="width: 200px">Media</th>
-            <th style="width: 150px">User</th>
+            <th style="width: 150px">Posted By</th>
             <th style="width: 100px">Like</th>
             <th style="width: 220px">Aksi</th>
             <th style="width: 200px">Hashtags</th>

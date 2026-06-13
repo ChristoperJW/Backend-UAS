@@ -111,4 +111,18 @@ class PostController extends Controller
 
         return redirect()->route('posts.index')->with('success', "Post Deleted Successfully");
     }
+
+    public function myPosts()
+    {
+    if (!$this->currentUserId()) {
+        return redirect('/login')->with('error', 'Tolong Login Terlebih Dahulu!');
+    }
+
+    $posts = Post::with(['user', 'likes', 'tags', 'taggedUsers'])
+        ->where('user_id', $this->currentUserId())
+        ->latest()
+        ->get();
+
+    return view('posts.my-posts', compact('posts'));
+    }
 }

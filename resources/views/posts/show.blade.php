@@ -17,7 +17,7 @@
 </p>
 
 <p>
-    <strong>User:</strong>
+    <strong>Posted By:</strong>
     <br>
     @if ($post->user)
         {{ $post->user->name ?? $post->user->fullName ?? $post->user->email }}
