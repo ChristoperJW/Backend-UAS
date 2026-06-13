@@ -60,6 +60,15 @@ class PostController extends Controller
         $post->tags()->sync($request->tags ?? []); 
         $post->taggedUsers()->sync($request->tagged_users ?? []);
 
+        foreach ($request->tagged_users ?? [] as $userId) {
+            NotificationController::create(
+                $userId,
+                $this->currentUserId(),
+                'tag_post',
+                $post->id
+            );
+        }
+
         return redirect()->route('posts.index')->with('success', 'Post Created Successfully');
     }
 
@@ -95,8 +104,22 @@ class PostController extends Controller
 
         $post->update($request->only('caption', 'media'));
 
+        $oldTaggedUserIds = $post->taggedUsers()->pluck('users.id')->toArray();
+        $newTaggedUserIds = $request->tagged_users ?? [];
+
         $post->tags()->sync($request->tags ?? []);
         $post->taggedUsers()->sync($request->tagged_users ?? []);
+
+        $addedTaggedUserIds = array_diff($newTaggedUserIds, $oldTaggedUserIds);
+
+        foreach ($addedTaggedUserIds as $userId) {
+            NotificationController::create(
+                $userId,
+                $this->currentUserId(),
+                'tag_post',
+                $post->id
+            );
+        }
 
         return redirect()->route('posts.index')->with('success', 'Post Updated Successfully');
     }
