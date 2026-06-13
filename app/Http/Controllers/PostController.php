@@ -17,15 +17,23 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $search = $request->search;
+        $tag = $request->tag;
+
+        $tags = Tag::all();
 
         $posts = Post::with(['user', 'likes', 'tags', 'taggedUsers']) 
             ->when($search, function ($query) use ($search) {
                 return $query->where('caption', 'like', '%' . $search . '%');
-            })
+        })
+            ->when($tag, function ($query) use ($tag) {
+                return $query->whereHas('tags', function ($q) use ($tag) {
+                    $q->where('tags.id', $tag);
+            });
+        })
             ->latest()
             ->get();
 
-        return view('posts.index', compact('posts', 'search'));
+        return view('posts.index', compact('posts', 'search', 'tag', 'tags'));
     }
 
     public function create()
