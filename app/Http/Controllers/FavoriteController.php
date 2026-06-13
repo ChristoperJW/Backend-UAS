@@ -33,7 +33,7 @@ class FavoriteController extends Controller
         return view('favorites.index', compact('favorites'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request, Post $post)
     {
         if (!$this->currentUserId()) {
             return redirect('/login')->with('error', 'Tolong Login Terlebih Dahulu!');
@@ -47,7 +47,7 @@ class FavoriteController extends Controller
         return back()->with('success', 'Post berhasil disimpan ke favorit.');
     }
 
-    public function destroy(Favorite $favorite)
+    public function destroy(Favorite $favorite, Post $post)
     {
         if (!$this->currentUserId()) {
             return redirect('/login')->with('error', 'Tolong Login Terlebih Dahulu!');

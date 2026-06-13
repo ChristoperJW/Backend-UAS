@@ -8,6 +8,8 @@
 <br><br>
 <a href="/">Kembali ke Homepage</a>
 <br><br>
+<a href="{{ route('favorites.index') }}">Favorite Posts</a>
+<br><br>
 
 <a href="{{ route('posts.create') }}">
     <button>Buat Post Baru</button>
@@ -62,7 +64,8 @@
             <th style="width: 200px">Media</th>
             <th style="width: 150px">Posted By</th>
             <th style="width: 80px">Like</th>
-            <th style="width: 100px">Komentar</th>
+            <th style="width: 100px">Comment</th>
+            <th style="width: 100px">Favorite</th>
             <th style="width: 220px">Aksi</th>
             <th style="width: 200px">Hashtags</th>
             <th style="width: 200px">Tagged Users</th>
@@ -88,6 +91,7 @@
             </td>
             <td style="text-align: center">{{ $post->likes->count() }}</td>
             <td style="text-align: center">{{ $post->comments->count()}}</td>
+            <td style="text-align: center">{{ $post->favorites->count() }}</td>
             <td style="text-align: center">
                 <a href="{{ route('posts.show', $post) }}">Detail</a>
                 |

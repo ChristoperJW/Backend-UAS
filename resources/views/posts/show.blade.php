@@ -41,23 +41,55 @@
 </p>
 
 <p>
-    <strong>Hashtags:</strong> // 
+    <strong>Jumlah Favorit:</strong>
+    {{ $post->favorites->count() }}
+</p>
+
+<p>
+    <strong>Hashtags:</strong> 
     <br>
     @foreach ($post->tags as $tag)
         #{{ $tag->name }}
     @endforeach
 </p>
 
-<form method="POST" action="{{ route('posts.like', $post) }}" style="display:inline;">
-    @csrf
-    <button type="submit">Like</button>
-</form>
+@php
+    $alreadyLiked = $post->likes->where('user_id', session('current_user_id'))->count() > 0;
+@endphp
 
-<form method="POST" action="{{ route('posts.unlike', $post) }}" style="display:inline;">
-    @csrf
-    @method('DELETE')
-    <button type="submit">Unlike</button>
-</form>
+@php
+    $alreadyLiked = $post->likes->where('user_id', session('current_user_id'))->count() > 0;
+@endphp
+
+@if (!$alreadyLiked)
+    <form method="POST" action="{{ route('posts.like', $post) }}" style="display:inline;">
+        @csrf
+        <button type="submit">Like</button>
+    </form>
+@else
+    <form method="POST" action="{{ route('posts.unlike', $post) }}" style="display:inline;">
+        @csrf
+        @method('DELETE')
+        <button type="submit">Unlike</button>
+    </form>
+@endif
+
+@php
+    $alreadyFavorited = $post->favorites->where('user_id', session('current_user_id'))->count() > 0;
+@endphp
+
+@if (!$alreadyFavorited)
+    <form method="POST" action="{{ route('posts.favorite', $post) }}" style="display:inline;">
+        @csrf
+        <button type="submit">Simpan ke Favorit</button>
+    </form>
+@else
+    <form method="POST" action="{{ route('posts.unfavorite', $post) }}" style="display:inline;">
+        @csrf
+        @method('DELETE')
+        <button type="submit">Hapus dari Favorit</button>
+    </form>
+@endif
 
 <br><br>
 
