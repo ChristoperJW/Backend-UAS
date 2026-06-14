@@ -1,3 +1,7 @@
+<a href="/">
+    <img src="{{ asset('images/Postify.png') }}" alt="Postify" width="250">
+</a>
+
 <h1>My Posts</h1>
 
 @if (session('success'))
@@ -23,6 +27,7 @@
             <th>Caption</th>
             <th>Media</th>
             <th>Jumlah Like</th>
+            <th>Jumlah Komentar</th>
             <th>Hashtags</th>
             <th>Tagged Users</th>
             <th>Aksi</th>
@@ -37,6 +42,8 @@
                 <td>{{ $post->media }}</td>
 
                 <td>{{ $post->likes->count() }}</td>
+
+                <td>{{ $post->comments->count() }}</td>
 
                 <td>
                     @forelse ($post->tags as $tag)
@@ -56,11 +63,10 @@
 
                 <td>
                     <a href="{{ route('posts.show', $post) }}">Detail</a>
-                    <br>
+                    |
                     <a href="{{ route('posts.edit', $post) }}">Ubah</a>
-                    <br>
-
-                    <form action="{{ route('posts.destroy', $post) }}" method="POST">
+                    |
+                    <form action="{{ route('posts.destroy', $post) }}" method="POST" style="display:inline;">
                         @csrf
                         @method('DELETE')
                         <button type="submit">Hapus</button>

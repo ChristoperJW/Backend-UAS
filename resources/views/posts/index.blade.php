@@ -1,6 +1,14 @@
+<a href="/">
+    <img src="{{ asset('images/Postify.png') }}" alt="Postify" width="250">
+</a>
+
 <h1>Daftar Post</h1>
 
 <a href="{{ route('posts.my') }}">My Posts</a>
+<br><br>
+<a href="{{ route('favorites.index') }}">Favorite Posts</a>
+<br><br>
+<a href="{{ route('reposts.index') }}">My Repost</a>
 <br><br>
 <a href="/">Kembali ke Homepage</a>
 <br><br>
@@ -37,7 +45,7 @@
 
 <a href="{{ route('posts.index') }}">Reset Filter</a>
 
-<br>
+<br><br>
 
 @if (session('success'))
     <p>{{ session('success') }}</p>
@@ -57,7 +65,10 @@
             <th style="width: 250px">Caption</th>
             <th style="width: 200px">Media</th>
             <th style="width: 150px">Posted By</th>
-            <th style="width: 100px">Like</th>
+            <th style="width: 80px">Like</th>
+            <th style="width: 100px">Comment</th>
+            <th style="width: 100px">Repost</th>
+            <th style="width: 100px">Favorite</th>
             <th style="width: 220px">Aksi</th>
             <th style="width: 200px">Hashtags</th>
             <th style="width: 200px">Tagged Users</th>
@@ -82,6 +93,9 @@
                 
             </td>
             <td style="text-align: center">{{ $post->likes->count() }}</td>
+            <td style="text-align: center">{{ $post->comments->count()}}</td>
+            <td style="text-align: center">{{ $post->reposts->count() }}</td>
+            <td style="text-align: center">{{ $post->favorites->count() }}</td>
             <td style="text-align: center">
                 <a href="{{ route('posts.show', $post) }}">Detail</a>
                 |

@@ -1,7 +1,15 @@
+<a href="/">
+    <img src="{{ asset('images/Postify.png') }}" alt="Postify" width="300">
+</a>
+
 <h1>Detail Post</h1>
 
 @if (session('success'))
     <p>{{ session('success') }}</p>
+@endif
+
+@if (session('error'))
+    <p>{{ session('error') }}</p>
 @endif
 
 <p>
@@ -32,23 +40,64 @@
 </p>
 
 <p>
-    <strong>Hashtags:</strong>
+    <strong>Jumlah Komentar:</strong>
+    {{ $post->comments->count() }}
+</p>
+
+<p>
+    <strong>Jumlah Repost:</strong>
+    {{ $post->reposts->count() }}
+</p>
+
+<p>
+    <strong>Jumlah Favorit:</strong>
+    {{ $post->favorites->count() }}
+</p>
+
+<p>
+    <strong>Hashtags:</strong> 
     <br>
     @foreach ($post->tags as $tag)
         #{{ $tag->name }}
     @endforeach
 </p>
 
-<form method="POST" action="{{ route('posts.like', $post) }}" style="display:inline;">
-    @csrf
-    <button type="submit">Like</button>
-</form>
+@php
+    $alreadyLiked = $post->likes->where('user_id', session('current_user_id'))->count() > 0;
+    $alreadyFavorited = $post->favorites->where('user_id', session('current_user_id'))->count() > 0;
+@endphp
 
-<form method="POST" action="{{ route('posts.unlike', $post) }}" style="display:inline;">
-    @csrf
-    @method('DELETE')
-    <button type="submit">Unlike</button>
-</form>
+@if (!$alreadyLiked)
+    <form method="POST" action="{{ route('posts.like', $post) }}" style="display:inline;">
+        @csrf
+        <button type="submit">Like</button>
+    </form>
+@else
+    <form method="POST" action="{{ route('posts.unlike', $post) }}" style="display:inline;">
+        @csrf
+        @method('DELETE')
+        <button type="submit">Unlike</button>
+    </form>
+@endif
+
+@if ($post->user_id != session('current_user_id'))
+    <form method="GET" action="{{ route('posts.repost.create', $post) }}" style="display:inline;">
+        <button type="submit">Repost</button>
+    </form>
+@endif
+
+@if (!$alreadyFavorited)
+    <form method="POST" action="{{ route('posts.favorite', $post) }}" style="display:inline;">
+        @csrf
+        <button type="submit">Simpan ke Favorit</button>
+    </form>
+@else
+    <form method="POST" action="{{ route('posts.unfavorite', $post) }}" style="display:inline;">
+        @csrf
+        @method('DELETE')
+        <button type="submit">Hapus dari Favorit</button>
+    </form>
+@endif
 
 <br><br>
 

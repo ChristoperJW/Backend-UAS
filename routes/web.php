@@ -12,6 +12,8 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\RepostController;
 
 Route::get('/', function () {
     if (!session()->has('current_user_id')) {
@@ -57,6 +59,13 @@ Route::get('/my-posts', [PostController::class, 'myPosts'])->name('posts.my');
 Route::resource('posts', PostController::class);
 Route::post('/posts/{post}/like', [LikeController::class, 'store'])->name('posts.like');
 Route::delete('/posts/{post}/like', [LikeController::class, 'destroy'])->name('posts.unlike');
+Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
+Route::post('/posts/{post}/favorite', [FavoriteController::class, 'store'])->name('posts.favorite');
+Route::delete('/posts/{post}/favorite', [FavoriteController::class, 'destroy'])->name('posts.unfavorite');
+Route::get('/reposts', [RepostController::class, 'index'])->name('reposts.index');
+Route::get('/posts/{post}/repost', [RepostController::class, 'create'])->name('posts.repost.create');
+Route::post('/posts/{post}/repost', [RepostController::class, 'store'])->name('posts.repost');
+Route::delete('/reposts/{repost}', [RepostController::class, 'destroy'])->name('reposts.destroy');
 Route::resource('comments', CommentController::class);
 
 
