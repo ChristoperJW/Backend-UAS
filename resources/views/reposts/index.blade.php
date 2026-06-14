@@ -79,7 +79,7 @@
 
                         <td style="text-align: center">
                             <a href="{{ route('posts.show', $repost->post) }}">Detail</a>
-
+                            |
                             <form action="{{ route('reposts.destroy', $repost) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')

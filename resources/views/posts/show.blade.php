@@ -64,10 +64,7 @@
 
 @php
     $alreadyLiked = $post->likes->where('user_id', session('current_user_id'))->count() > 0;
-@endphp
-
-@php
-    $alreadyLiked = $post->likes->where('user_id', session('current_user_id'))->count() > 0;
+    $alreadyFavorited = $post->favorites->where('user_id', session('current_user_id'))->count() > 0;
 @endphp
 
 @if (!$alreadyLiked)
@@ -84,14 +81,10 @@
 @endif
 
 @if ($post->user_id != session('current_user_id'))
-    <a href="{{ route('posts.repost.create', $post) }}">
-        <button type="button">Repost</button>
-    </a>
+    <form method="GET" action="{{ route('posts.repost.create', $post) }}" style="display:inline;">
+        <button type="submit">Repost</button>
+    </form>
 @endif
-
-@php
-    $alreadyFavorited = $post->favorites->where('user_id', session('current_user_id'))->count() > 0;
-@endphp
 
 @if (!$alreadyFavorited)
     <form method="POST" action="{{ route('posts.favorite', $post) }}" style="display:inline;">

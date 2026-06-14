@@ -6,11 +6,11 @@
 
 <a href="{{ route('posts.my') }}">My Posts</a>
 <br><br>
-<a href="/">Kembali ke Homepage</a>
-<br><br>
 <a href="{{ route('favorites.index') }}">Favorite Posts</a>
 <br><br>
 <a href="{{ route('reposts.index') }}">My Repost</a>
+<br><br>
+<a href="/">Kembali ke Homepage</a>
 <br><br>
 
 <a href="{{ route('posts.create') }}">
