@@ -90,4 +90,9 @@ class User extends Authenticatable
     {
     return $this->hasMany(Repost::class);
     }
+
+    public function stories()
+    {
+    return $this->hasMany(Story::class);
+    }
 }
