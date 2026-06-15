@@ -8,6 +8,7 @@ use App\Models\Tag;
 use App\Models\User;
 use App\Models\Favorite;
 use App\Models\Repost;
+use App\Models\Story;
 
 class PostController extends Controller
 {
@@ -34,8 +35,13 @@ class PostController extends Controller
         })
             ->latest()
             ->get();
+        
+        $stories = Story::with('user')
+            ->where('created_at', '>=', now()->subDay())
+            ->latest()
+            ->get();
 
-        return view('posts.index', compact('posts', 'search', 'tag', 'tags'));
+        return view('posts.index', compact('posts', 'search', 'tag', 'tags', 'stories'));
     }
 
     public function create()

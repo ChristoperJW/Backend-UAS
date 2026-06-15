@@ -1,5 +1,5 @@
 <a href="/">
-    <img src="{{ asset('images/Postify.png') }}" alt="Postify" width="300">
+    <img src="{{ asset('images/Postify.png') }}" alt="Postify" width="200">
 </a>
 
 <h1>Detail Post</h1>
@@ -12,71 +12,91 @@
     <p>{{ session('error') }}</p>
 @endif
 
-<p>
-    <strong>Caption:</strong>
-    <br>
-    {{ $post->caption }}
-</p>
+<table border="1" cellpadding="5" cellspacing="0">
+    <tr>
+        <th style="width: 150px">Caption</th>
+        <td style="width: 500px">{{ $post->caption }}</td>
+    </tr>
 
-<p>
-    <strong>Media:</strong>
-    <br>
+    <tr>
+        <th>Media</th>
+        <td>
+            @if ($post->media)
+                @php
+                    $extension = strtolower(pathinfo($post->media, PATHINFO_EXTENSION));
+                @endphp
 
-    @if ($post->media && file_exists(public_path('uploads/posts/' . $post->media)))
-        @php
-            $extension = strtolower(pathinfo($post->media, PATHINFO_EXTENSION));
-        @endphp
+                @if (in_array($extension, ['jpg', 'jpeg', 'png']))
+                    <img src="{{ asset('uploads/posts/' . $post->media) }}" width="300">
+                @elseif (in_array($extension, ['mp4']))
+                    <video width="400" controls>
+                        <source src="{{ asset('uploads/posts/' . $post->media) }}" type="video/mp4">
+                        Browser tidak mendukung video.
+                    </video>
+                @endif
+            @else
+                Tidak ada media
+            @endif
+        </td>
+    </tr>
 
-        @if (in_array($extension, ['jpg', 'jpeg', 'png']))
-            <img src="{{ asset('uploads/posts/' . $post->media) }}" width="300">
-        @elseif (in_array($extension, ['mp4']))
-            <video width="400" controls preload = "metadata">
-                <source src="{{ asset('uploads/posts/' . $post->media) }}" type="video/mp4">
-                Browser tidak mendukung video.
-            </video>
-        @endif
-    @else
-        Tidak ada media
-    @endif
-</p>
+    <tr>
+        <th>Posted By</th>
+        <td>
+            @if ($post->user)
+                {{ $post->user->name ?? $post->user->fullName ?? $post->user->email }}
+            @else
+                User ID: {{ $post->user_id }}
+            @endif
+        </td>
+    </tr>
 
-<p>
-    <strong>Posted By:</strong>
-    <br>
-    @if ($post->user)
-        {{ $post->user->name ?? $post->user->fullName ?? $post->user->email }}
-    @else
-        User ID: {{ $post->user_id }}
-    @endif
-</p>
+    <tr>
+        <th>Jumlah Like</th>
+        <td>{{ $post->likes->count() }}</td>
+    </tr>
 
-<p>
-    <strong>Jumlah Like:</strong>
-    {{ $post->likes->count() }}
-</p>
+    <tr>
+        <th>Jumlah Komentar</th>
+        <td>{{ $post->comments->count() }}</td>
+    </tr>
 
-<p>
-    <strong>Jumlah Komentar:</strong>
-    {{ $post->comments->count() }}
-</p>
+    <tr>
+        <th>Jumlah Repost</th>
+        <td>{{ $post->reposts->count() }}</td>
+    </tr>
 
-<p>
-    <strong>Jumlah Repost:</strong>
-    {{ $post->reposts->count() }}
-</p>
+    <tr>
+        <th>Jumlah Favorit</th>
+        <td>{{ $post->favorites->count() }}</td>
+    </tr>
 
-<p>
-    <strong>Jumlah Favorit:</strong>
-    {{ $post->favorites->count() }}
-</p>
+    <tr>
+        <th>Hashtags</th>
+        <td>
+            @forelse ($post->tags as $tag)
+                #{{ $tag->name }}
+                <br>
+            @empty
+                Tidak ada hashtag
+            @endforelse
+        </td>
+    </tr>
 
-<p>
-    <strong>Hashtags:</strong> 
-    <br>
-    @foreach ($post->tags as $tag)
-        #{{ $tag->name }}
-    @endforeach
-</p>
+    <tr>
+        <th>Tagged Users</th>
+        <td>
+            @forelse ($post->taggedUsers as $user)
+                {{ '@' . $user->name }}
+                <br>
+            @empty
+                Tidak ada user yang ditandai
+            @endforelse
+        </td>
+    </tr>
+</table>
+
+<br>
 
 @php
     $alreadyLiked = $post->likes->where('user_id', session('current_user_id'))->count() > 0;

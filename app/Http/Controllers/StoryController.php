@@ -3,63 +3,65 @@
 namespace App\Http\Controllers;
 
 use App\Models\Story;
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class StoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    private function currentUserId()
     {
-        //
+        return session('current_user_id');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+         if (!$this->currentUserId()) {
+            return redirect('/login')->with('error', 'Tolong Login Terlebih Dahulu!');
+        }
+
+        return view('stories.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        if (!$this->currentUserId()) {
+            return redirect('/login')->with('error', 'Tolong Login Terlebih Dahulu!');
+        }
+
+        $request->validate([
+            'caption' => 'nullable|string|max:255',
+            'media' => 'required|file|mimes:jpg,jpeg,png,mp4|max:20480',
+        ]);
+
+        $mediaName = time() . '_' . $request->file('media')->getClientOriginalName();
+        $request->file('media')->move(public_path('uploads/stories'), $mediaName);
+
+        Story::create([
+            'user_id' => $this->currentUserId(),
+            'caption' => $request->caption,
+            'media' => $mediaName,
+        ]);
+
+        return redirect()->route('posts.index')->with('success', 'Story berhasil dibuat.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Story $story)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Story $story)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Story $story)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Story $story)
     {
-        //
+        if (!$this->currentUserId()) {
+            return redirect('/login')->with('error', 'Tolong Login Terlebih Dahulu!');
+        }
+
+        if ($story->user_id != $this->currentUserId()) {
+            return redirect()->route('posts.index')->with('error', 'Anda tidak punya akses untuk menghapus story ini.');
+        }
+
+        if ($story->media && file_exists(public_path('uploads/stories/' . $story->media))) {
+            unlink(public_path('uploads/stories/' . $story->media));
+        }
+
+        $story->delete();
+
+        return redirect()->route('posts.index')->with('success', 'Story berhasil dihapus.');
     }
 }
+

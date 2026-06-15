@@ -1,15 +1,13 @@
 <a href="/">
-    <img src="{{ asset('images/Postify.png') }}" alt="Postify" width="300">
+    <img src="{{ asset('images/Postify.png') }}" alt="Postify" width="200">
 </a>
 
 <h1>Buat Post Baru</h1>
 
 @if ($errors->any())
-    <ul>
-        @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-        @endforeach
-    </ul>
+    @foreach ($errors->all() as $error)
+        <p>{{ $error }}</p>
+    @endforeach
 @endif
 
 <form method="POST" action="{{ route('posts.store') }}" enctype="multipart/form-data">
@@ -17,31 +15,32 @@
 
     Caption:
     <br>
-    <input type="text" name="caption" value="{{ old('caption') }}" required>
+    <input type="text" name="caption" value="{{ old('caption') }}" required style="width: 400px;">
     <br><br>
 
-    Media ( Foto / Video ):
+    Media (Foto / Video):
     <br>
-    <input type="file" name="media" accept="image/*, video/*">
-    
+    <input type="file" name="media" accept="image/*,video/*">
     <br><br>
 
     Hashtags:
     <br>
     @foreach ($tags as $tag)
-    <input type="checkbox" name="tags[]" value="{{ $tag->id }}">
-    {{ $tag->name }}
-    <br>
+        <input type="checkbox" name="tags[]" value="{{ $tag->id }}">
+        #{{ $tag->name }}
+        <br>
     @endforeach
+
     <br>
 
-    Tag Users :
+    Tag Users:
     <br>
     @foreach ($users as $user)
-    <input type="checkbox" name="tagged_users[]" value="{{ $user->id }}">
-    {{ $user->name }}
-    <br>
+        <input type="checkbox" name="tagged_users[]" value="{{ $user->id }}">
+        {{ '@' . $user->name }}
+        <br>
     @endforeach
+
     <br>
 
     <button type="submit">Simpan</button>
@@ -49,4 +48,4 @@
 
 <br>
 
-<a href="{{ route('posts.index') }}">Kembali</a>
+<a href="{{ route('posts.index') }}">Kembali ke Daftar Post</a>
