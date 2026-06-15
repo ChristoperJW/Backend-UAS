@@ -21,7 +21,23 @@
 <p>
     <strong>Media:</strong>
     <br>
-    {{ $post->media }}
+
+    @if ($post->media && file_exists(public_path('uploads/posts/' . $post->media)))
+        @php
+            $extension = strtolower(pathinfo($post->media, PATHINFO_EXTENSION));
+        @endphp
+
+        @if (in_array($extension, ['jpg', 'jpeg', 'png']))
+            <img src="{{ asset('uploads/posts/' . $post->media) }}" width="300">
+        @elseif (in_array($extension, ['mp4']))
+            <video width="400" controls preload = "metadata">
+                <source src="{{ asset('uploads/posts/' . $post->media) }}" type="video/mp4">
+                Browser tidak mendukung video.
+            </video>
+        @endif
+    @else
+        Tidak ada media
+    @endif
 </p>
 
 <p>

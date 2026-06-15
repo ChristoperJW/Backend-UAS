@@ -12,7 +12,7 @@
     </ul>
 @endif
 
-<form method="POST" action="{{ route('posts.store') }}">
+<form method="POST" action="{{ route('posts.store') }}" enctype="multipart/form-data">
     @csrf
 
     Caption:
@@ -20,9 +20,9 @@
     <input type="text" name="caption" value="{{ old('caption') }}" required>
     <br><br>
 
-    Media:
+    Media ( Foto / Video ):
     <br>
-    <input type="text" name="media" value="{{ old('media') }}">
+    <input type="file" name="media" accept="image/*, video/*">
     
     <br><br>
 

@@ -8,7 +8,7 @@
     </ul>
 @endif
 
-<form method="POST" action="{{ route('posts.update', $post) }}">
+<form method="POST" action="{{ route('posts.update', $post) }}" encytype="multipart/form-data">
     @csrf
     @method('PUT')
 
@@ -17,10 +17,29 @@
     <input type="text" name="caption" value="{{ old('caption', $post->caption) }}" required>
     <br><br>
 
-    Media:
+    Media ( Foto / Video):
     <br>
-    <input type="text" name="media" value="{{ old('media', $post->media) }}">
-    <br><br>
+    @if ($post->media)
+        @php
+            $extension = strtolower(pathinfo($post->media, PATHINFO_EXTENSION));
+        @endphp
+
+        @if (in_array($extension, ['jpg', 'jpeg', 'png']))
+            <img src="{{ asset('uploads/posts/' . $post->media) }}" width="200">
+        @elseif (in_array($extension, ['mp4']))
+        <video width="250" controls>
+            <source src="{{ asset('uploads/posts/' . $post->media) }}">
+            Browser tidak mendukung video.
+        </video>
+    @endif
+
+        <br>
+        <small>Media saat ini: {{ $post->media }}</small>
+        <br><br>
+@endif
+
+<input type="file" name="media" accept="image/*,video/*">
+<br><br>
 
     Hashtags:
     <br>

@@ -58,13 +58,20 @@ class PostController extends Controller
 
         $request->validate([
             'caption' => 'required|string',
-            'media' => 'nullable|string',
+            'media' => 'nullable|file|mimes:jpg,jpeg,png,mp4|max:20480', 
         ]);
+
+        $mediaName = null;
+
+        if ($request->hasFile('media')) {
+            $mediaName = time() . '_' . $request->file('media')->getClientOriginalName();
+            $request->file('media')->move(public_path('uploads/posts'), $mediaName);
+        }
 
         $post = Post::create([
             'user_id' => $this->currentUserId(),
             'caption' => $request->caption,
-            'media' => $request->media,
+            'media' => $mediaName,
         ]);
 
         $post->tags()->sync($request->tags ?? []); 
@@ -109,10 +116,24 @@ class PostController extends Controller
 
         $request->validate([
             'caption' => 'required|string',
-            'media' => 'nullable|string',
+            'media' => 'nullable|file|mimes:jpg,jpeg,png,mp4|max:20480',
         ]);
 
-        $post->update($request->only('caption', 'media'));
+        $mediaName = $post->media;
+
+        if ($request->hasFile('media')) {
+            if ($post->media && file_exists(public_path('uploads/posts/' . $post->media))) {
+                unlink(public_path('uploads/posts/' . $post->media));
+            }
+
+            $mediaName = time() . '_' . $request->file('media')->getClientOriginalName();
+            $request->file('media')->move(public_path('uploads/posts'), $mediaName);
+        }
+
+        $post->update([
+            'caption' => $request->caption,
+            'media' => $mediaName,
+        ]);
 
         $oldTaggedUserIds = $post->taggedUsers()->pluck('users.id')->toArray();
         $newTaggedUserIds = $request->tagged_users ?? [];
