@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Models\User;
+use App\Models\Favorite;
+use App\Models\Repost;
+use App\Models\Story;
 
 class PostController extends Controller
 {
@@ -21,7 +24,7 @@ class PostController extends Controller
 
         $tags = Tag::all();
 
-        $posts = Post::with(['user', 'likes', 'tags', 'taggedUsers']) 
+        $posts = Post::with(['user', 'likes', 'comments', 'favorites', 'reposts', 'tags', 'taggedUsers'])
             ->when($search, function ($query) use ($search) {
                 return $query->where('caption', 'like', '%' . $search . '%');
         })
@@ -32,8 +35,13 @@ class PostController extends Controller
         })
             ->latest()
             ->get();
+        
+        $stories = Story::with('user')
+            ->where('created_at', '>=', now()->subDay())
+            ->latest()
+            ->get();
 
-        return view('posts.index', compact('posts', 'search', 'tag', 'tags'));
+        return view('posts.index', compact('posts', 'search', 'tag', 'tags', 'stories'));
     }
 
     public function create()
@@ -56,13 +64,20 @@ class PostController extends Controller
 
         $request->validate([
             'caption' => 'required|string',
-            'media' => 'nullable|string',
+            'media' => 'nullable|file|mimes:jpg,jpeg,png,mp4|max:20480', 
         ]);
+
+        $mediaName = null;
+
+        if ($request->hasFile('media')) {
+            $mediaName = time() . '_' . $request->file('media')->getClientOriginalName();
+            $request->file('media')->move(public_path('uploads/posts'), $mediaName);
+        }
 
         $post = Post::create([
             'user_id' => $this->currentUserId(),
             'caption' => $request->caption,
-            'media' => $request->media,
+            'media' => $mediaName,
         ]);
 
         $post->tags()->sync($request->tags ?? []); 
@@ -82,7 +97,7 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
-        $post->load(['user', 'likes', 'tags', 'taggedUsers']);
+        $post->load(['user', 'likes', 'comments', 'favorites', 'reposts', 'tags', 'taggedUsers']);
 
         return view('posts.show', compact('post'));
     }
@@ -107,10 +122,24 @@ class PostController extends Controller
 
         $request->validate([
             'caption' => 'required|string',
-            'media' => 'nullable|string',
+            'media' => 'nullable|file|mimes:jpg,jpeg,png,mp4|max:20480',
         ]);
 
-        $post->update($request->only('caption', 'media'));
+        $mediaName = $post->media;
+
+        if ($request->hasFile('media')) {
+            if ($post->media && file_exists(public_path('uploads/posts/' . $post->media))) {
+                unlink(public_path('uploads/posts/' . $post->media));
+            }
+
+            $mediaName = time() . '_' . $request->file('media')->getClientOriginalName();
+            $request->file('media')->move(public_path('uploads/posts'), $mediaName);
+        }
+
+        $post->update([
+            'caption' => $request->caption,
+            'media' => $mediaName,
+        ]);
 
         $oldTaggedUserIds = $post->taggedUsers()->pluck('users.id')->toArray();
         $newTaggedUserIds = $request->tagged_users ?? [];
@@ -149,7 +178,7 @@ class PostController extends Controller
         return redirect('/login')->with('error', 'Tolong Login Terlebih Dahulu!');
     }
 
-    $posts = Post::with(['user', 'likes', 'tags', 'taggedUsers'])
+    $posts = Post::with(['user', 'likes', 'comments', 'reposts', 'favorites', 'tags', 'taggedUsers'])
         ->where('user_id', $this->currentUserId())
         ->latest()
         ->get();

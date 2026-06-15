@@ -25,6 +25,11 @@
                 @if ($notif->post)
                     - <a href="{{ route('posts.show', $notif->post) }}">"{{ $notif->post->caption }}"</a>
                 @endif
+            @elseif ($notif->type === 'repost')
+                {{ $notif->sender->name }} merepost postingan Anda
+                @if ($notif->post)
+                    - <a href="{{ route('posts.show', $notif->post) }}">"{{ $notif->post->caption }}"</a>
+                @endif
             @endif
 
             - <small>{{ $notif->created_at->diffForHumans() }}</small>

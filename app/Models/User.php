@@ -80,4 +80,19 @@ class User extends Authenticatable
     {
         return $this->hasManyThrough(Group::class, GroupMember::class, 'user_id', 'id', 'id', 'group_id');
     }
+
+    public function favoritePosts()
+    {
+    return $this->belongsToMany(Post::class, 'favorites');
+    }
+
+    public function reposts()
+    {
+    return $this->hasMany(Repost::class);
+    }
+
+    public function stories()
+    {
+    return $this->hasMany(Story::class);
+    }
 }
