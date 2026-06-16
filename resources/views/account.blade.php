@@ -4,7 +4,10 @@
         <title>Account Settings</title>
     </head>
     <body>
+        <div style="display: flex; align-items: center; gap: 10px;">
+        <img src="{{ asset('images/settings.png') }}" width="50">
         <h1>Account Settings</h1>
+        </div>
 
         <form action="/account/update" method="GET">
             @csrf

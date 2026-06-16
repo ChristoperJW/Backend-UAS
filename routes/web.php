@@ -61,10 +61,6 @@ Route::delete('/posts/{post}/like', [LikeController::class, 'destroy'])->name('p
 Route::resource('comments', CommentController::class);
 
 
-Route::get('/feeds', [FeedController::class, 'index'])->name('feeds.index');
-Route::post('/feeds/{post}/comment', [FeedController::class, 'comment'])->name('feeds.comment');
-
-
 Route::group(['middleware' => function ($request, $next) {
     if (!session()->has('current_user_id')) {
         return redirect('/login')->with('error', 'Please log in first!');
