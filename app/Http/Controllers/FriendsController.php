@@ -120,12 +120,17 @@ class FriendsController extends Controller
             ->where('following_id', $id)
             ->exists();
 
+        $isOwner = $currentUserId == $user->id;
+
+        $canViewProfile = !$user->is_private || $isOwner || $isFollowing;
+
         return view('friends.profile', compact(
             'user',
             'followersCount',
             'followingCount',
             'isFollowing',
-            'currentUserId'
+            'currentUserId',
+            'canViewProfile',
         ));
     }
 

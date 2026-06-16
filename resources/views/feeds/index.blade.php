@@ -5,13 +5,13 @@
     <p>Sedang tidak ada postingan</p>
 @else
     @foreach($posts as $index => $post)
-        <p>Post {{ $index + 1 }} : {{ $post->user->name }}</p>
+        <p>Post {{ $index + 1 }} : {{ $post->user?->name ?? 'Pengguna Dihapus' }}</p>
         <img src="{{ asset('images/' . $post->media) }}" width="400">
         <p>Caption : {{ $post->caption }}</p>
         <hr>
 
         @forelse($post->comments as $i => $comment)
-            <p>Komen {{ $i + 1 }} : {{ $comment->user->name }} - {{ $comment->content }}</p>
+            <p>Komen {{ $i + 1 }} : {{ $comment->user?->name ?? 'Pengguna Dihapus' }} - {{ $comment->content }}</p>
 
             @if ($comment->user_id == session('current_user_id'))
             <form action="{{ route('comments.destroy', $comment) }}" method="POST">
