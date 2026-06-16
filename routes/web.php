@@ -15,6 +15,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\RepostController;
 use App\Http\Controllers\StoryController;
+use App\Http\Controllers\ReportController;
 
 Route::get('/', function () {
     if (!session()->has('current_user_id')) {
@@ -109,3 +110,6 @@ Route::post('/feeds/{post}/comment', [FeedController::class, 'comment'])->name('
 
 Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+
+Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');

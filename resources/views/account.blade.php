@@ -59,6 +59,12 @@
 
         <br>
 
+        <a href="{{ route('reports.index') }}">
+            <button type="button" style="background: red; color: white; padding: 10px; border-radius: 5px; cursor: pointer;">
+                Report an Issue
+            </button>
+        </a><br>
+        
         <a href="/">Back</a>
     </body>
 </html>
