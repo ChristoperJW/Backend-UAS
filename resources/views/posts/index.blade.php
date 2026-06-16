@@ -200,18 +200,18 @@
                     </td>
 
                     <td style="text-align: center">
-                        <img src="{{ asset('images/like.png') }}" width="25"> <br>
+                        <img src="{{ asset('images/like.png') }}" width="40"> <br>
                         {{ $post->likes->count() }}</td>
                     <td style="text-align: center">
                         <a href="{{ route('comments.index') }}">
-                            <img src="{{ asset('images/comment.png') }}" width="25">
+                            <img src="{{ asset('images/comment.png') }}" width="40">
                         </a> <br>
                             {{ $post->comments->count() }}</td>
                     <td style="text-align: center">
-                        <img src="{{ asset('images/repost.png') }}" width="25"> <br>
+                        <img src="{{ asset('images/repost.png') }}" width="40"> <br>
                         {{ $post->reposts->count() }}</td>
                     <td style="text-align: center">
-                        <img src="{{ asset('images/fav.png') }}" width="25"> <br>
+                        <img src="{{ asset('images/fav.png') }}" width="40"> <br>
                         {{ $post->favorites->count() }}</td>
 
                     <td style="text-align: center">
@@ -221,9 +221,7 @@
                         <form action="{{ route('posts.destroy', $post) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" style="background:none; border:none; cursor:pointer; padding:0;">
-                                <img src="{{ asset('images/Trash.png') }}" width="25">
-                            </button>
+                            <button type="submit">Hapus</button>
                         </form>
                     </td>
 
