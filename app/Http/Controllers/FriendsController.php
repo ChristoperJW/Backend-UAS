@@ -6,12 +6,13 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Follow;
 use App\Models\FollowRequest;
+use App\Models\CloseFriend;
 
 class FriendsController extends Controller
 {
     public function index(Request $request)
     {
-        $currentUserId = session('current_user_id', 1);
+        $currentUserId = session('current_user_id');
 
         $currentUser = User::find($currentUserId);
 
@@ -51,20 +52,27 @@ class FriendsController extends Controller
 
     public function followers()
     {
-        $currentUserId = session('current_user_id', 1);
+    $currentUserId = session('current_user_id');
 
-        $followers = User::whereIn('id', function ($query) use ($currentUserId) {
-            $query->select('follower_id')
-                ->from('follows')
-                ->where('following_id', $currentUserId);
-        })->get();
+    $followers = User::whereIn('id', function ($query) use ($currentUserId) {
+        $query->select('follower_id')
+            ->from('follows')
+            ->where('following_id', $currentUserId);
+    })->get();
 
-        return view('friends.followers', compact('followers'));
+    $closeFriendIds = CloseFriend::where('user_id', $currentUserId)
+        ->pluck('close_friend_id')
+        ->toArray();
+
+    return view('friends.followers', compact(
+        'followers',
+        'closeFriendIds'
+    ));
     }
 
     public function following()
     {
-        $currentUserId = session('current_user_id', 1);
+        $currentUserId = session('current_user_id');
 
         $followingIds = Follow::where('follower_id', $currentUserId)
                 ->pluck('following_id');
@@ -121,6 +129,10 @@ class FriendsController extends Controller
             ->exists();
 
         $isOwner = $currentUserId == $user->id;
+        
+        $isCloseFriend = CloseFriend::where('user_id', $user->id)
+            ->where('close_friend_id', $currentUserId)
+            ->exists();
 
         $canViewProfile = !$user->is_private || $isOwner || $isFollowing;
 
@@ -131,6 +143,7 @@ class FriendsController extends Controller
             'isFollowing',
             'currentUserId',
             'canViewProfile',
+            'isCloseFriend',
         ));
     }
 

@@ -15,6 +15,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\RepostController;
 use App\Http\Controllers\StoryController;
+use App\Http\Controllers\CloseFriendController;
 
 Route::get('/', function () {
     if (!session()->has('current_user_id')) {
@@ -88,6 +89,9 @@ Route::group(['middleware' => function ($request, $next) {
     Route::post('/friends/requests/{id}/accept', [FollowController::class, 'acceptRequest'])->name('friends.requests.accept');
     Route::post('/friends/requests/{id}/reject', [FollowController::class, 'rejectRequest'])->name('friends.requests.reject');
     Route::get('/users/{id}/profile', [FriendsController::class, 'profile'])->name('users.profile');
+    Route::get('/friends/close-friends', [CloseFriendController::class, 'index'])->name('close-friends.index');
+    Route::post('/friends/close-friends/{id}/add', [CloseFriendController::class, 'store'])->name('close-friends.add');
+    Route::post('/friends/close-friends/{id}/remove', [CloseFriendController::class, 'destroy'])->name('close-friends.remove');
 
     Route::get('/groups/create', [GroupController::class, 'create'])->name('groups.create');
     Route::post('/groups/store', [GroupController::class, 'store'])->name('groups.store');
