@@ -5,7 +5,20 @@
     <strong>{{ $post->user->name }}</strong>
     </div>
 
-    <img src="{{ asset('uploads/posts/' . $post->media) }}" width="400">
+    @if($post->media)
+        @php
+            $extension = strtolower(pathinfo($post->media, PATHINFO_EXTENSION));
+        @endphp
+
+        @if(in_array($extension, ['jpg', 'jpeg', 'png']))
+            <img src="{{ asset('uploads/posts/' . $post->media) }}" width="400">
+        @elseif($extension == 'mp4')
+            <video width="400" controls>
+                <source src="{{ asset('uploads/posts/' . $post->media) }}" type="video/mp4">
+            </video>
+        @endif
+    @endif
+    
     <p>Caption : {{ $post->caption }}</p>
     <hr>
 
