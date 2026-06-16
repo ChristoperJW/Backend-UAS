@@ -203,8 +203,10 @@
                         <img src="{{ asset('images/like.png') }}" width="25"> <br>
                         {{ $post->likes->count() }}</td>
                     <td style="text-align: center">
-                        <img src="{{ asset('images/comment.png') }}" width="25"> <br>
-                        {{ $post->comments->count() }}</td>
+                        <a href="{{ route('comments.index') }}">
+                            <img src="{{ asset('images/comment.png') }}" width="25">
+                        </a> <br>
+                            {{ $post->comments->count() }}</td>
                     <td style="text-align: center">
                         <img src="{{ asset('images/repost.png') }}" width="25"> <br>
                         {{ $post->reposts->count() }}</td>

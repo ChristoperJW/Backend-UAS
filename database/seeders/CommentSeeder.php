@@ -25,5 +25,31 @@ class CommentSeeder extends Seeder
             'user_id' => $user->id,
             'post_id' => $post->id,
         ]);
+
+        $user2 = User::where('email', 'michael@example.com')->firstOrFail();
+
+        $post2 = Post::firstOrCreate([
+            'caption' => 'Liburan',
+            'user_id' => $user2->id,
+            'media' => '1781509761_Liburan.jpg'
+        ]);
+
+        Comment::create([
+            'content' => 'Asik Liburan',
+            'user_id' => $user2->id,
+            'post_id' => $post2->id,
+        ]);
+
+        $post3 = Post::firstOrCreate([
+            'caption' => 'Nonton',
+            'user_id' => $user2->id,
+            'media' => '1781512035_Opening_Demon_Slayer.mp4'
+        ]);
+
+        Comment::create([
+            'content' => 'Film apa itu!',
+            'user_id' => $user2->id,
+            'post_id' => $post3->id,
+        ]);
     }
 }

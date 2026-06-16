@@ -53,7 +53,7 @@ class CommentController extends Controller
 
         NotificationController::create($comment->post->user_id, $this->currentUserId(), 'comment', $comment->post_id);
 
-        return redirect()->route('comments.show', $comment)->with('success', 'Comment created successfully.');
+        return redirect()->route('comments.index')->with('success', 'Comment created successfully.');
     }
 
     public function show(Comment $comment)
@@ -61,7 +61,9 @@ class CommentController extends Controller
         if(!$this->currentUserId()) {
             return redirect('/login')->with('Error', 'Tolong Login Terlebih Dahulu!');
         }
-        return view('comments.show', compact('comment'));
+
+        $posts = Post::with(['user', 'comments.user'])->get();
+        return view('comments.index', compact('posts'));
     }
 
     public function destroy(Comment $comment)
