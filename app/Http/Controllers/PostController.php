@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Models\User;
+use App\Models\Favorite;
+use App\Models\Repost;
+use App\Models\Story;
 
 class PostController extends Controller
 {
@@ -17,15 +20,28 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $search = $request->search;
+        $tag = $request->tag;
 
-        $posts = Post::with(['user', 'likes', 'tags', 'taggedUsers']) 
+        $tags = Tag::all();
+
+        $posts = Post::with(['user', 'likes', 'comments', 'favorites', 'reposts', 'tags', 'taggedUsers'])
             ->when($search, function ($query) use ($search) {
                 return $query->where('caption', 'like', '%' . $search . '%');
-            })
+        })
+            ->when($tag, function ($query) use ($tag) {
+                return $query->whereHas('tags', function ($q) use ($tag) {
+                    $q->where('tags.id', $tag);
+            });
+        })
+            ->latest()
+            ->get();
+        
+        $stories = Story::with('user')
+            ->where('created_at', '>=', now()->subDay())
             ->latest()
             ->get();
 
-        return view('posts.index', compact('posts', 'search'));
+        return view('posts.index', compact('posts', 'search', 'tag', 'tags', 'stories'));
     }
 
     public function create()
@@ -48,24 +64,40 @@ class PostController extends Controller
 
         $request->validate([
             'caption' => 'required|string',
-            'media' => 'nullable|string',
+            'media' => 'nullable|file|mimes:jpg,jpeg,png,mp4|max:20480', 
         ]);
+
+        $mediaName = null;
+
+        if ($request->hasFile('media')) {
+            $mediaName = time() . '_' . $request->file('media')->getClientOriginalName();
+            $request->file('media')->move(public_path('uploads/posts'), $mediaName);
+        }
 
         $post = Post::create([
             'user_id' => $this->currentUserId(),
             'caption' => $request->caption,
-            'media' => $request->media,
+            'media' => $mediaName,
         ]);
 
         $post->tags()->sync($request->tags ?? []); 
         $post->taggedUsers()->sync($request->tagged_users ?? []);
+
+        foreach ($request->tagged_users ?? [] as $userId) {
+            NotificationController::create(
+                $userId,
+                $this->currentUserId(),
+                'tag_post',
+                $post->id
+            );
+        }
 
         return redirect()->route('posts.index')->with('success', 'Post Created Successfully');
     }
 
     public function show(Post $post)
     {
-        $post->load(['user', 'likes', 'tags', 'taggedUsers']);
+        $post->load(['user', 'likes', 'comments', 'favorites', 'reposts', 'tags', 'taggedUsers']);
 
         return view('posts.show', compact('post'));
     }
@@ -90,13 +122,41 @@ class PostController extends Controller
 
         $request->validate([
             'caption' => 'required|string',
-            'media' => 'nullable|string',
+            'media' => 'nullable|file|mimes:jpg,jpeg,png,mp4|max:20480',
         ]);
 
-        $post->update($request->only('caption', 'media'));
+        $mediaName = $post->media;
+
+        if ($request->hasFile('media')) {
+            if ($post->media && file_exists(public_path('uploads/posts/' . $post->media))) {
+                unlink(public_path('uploads/posts/' . $post->media));
+            }
+
+            $mediaName = time() . '_' . $request->file('media')->getClientOriginalName();
+            $request->file('media')->move(public_path('uploads/posts'), $mediaName);
+        }
+
+        $post->update([
+            'caption' => $request->caption,
+            'media' => $mediaName,
+        ]);
+
+        $oldTaggedUserIds = $post->taggedUsers()->pluck('users.id')->toArray();
+        $newTaggedUserIds = $request->tagged_users ?? [];
 
         $post->tags()->sync($request->tags ?? []);
         $post->taggedUsers()->sync($request->tagged_users ?? []);
+
+        $addedTaggedUserIds = array_diff($newTaggedUserIds, $oldTaggedUserIds);
+
+        foreach ($addedTaggedUserIds as $userId) {
+            NotificationController::create(
+                $userId,
+                $this->currentUserId(),
+                'tag_post',
+                $post->id
+            );
+        }
 
         return redirect()->route('posts.index')->with('success', 'Post Updated Successfully');
     }
@@ -110,5 +170,19 @@ class PostController extends Controller
         $post->delete();
 
         return redirect()->route('posts.index')->with('success', "Post Deleted Successfully");
+    }
+
+    public function myPosts()
+    {
+    if (!$this->currentUserId()) {
+        return redirect('/login')->with('error', 'Tolong Login Terlebih Dahulu!');
+    }
+
+    $posts = Post::with(['user', 'likes', 'comments', 'reposts', 'favorites', 'tags', 'taggedUsers'])
+        ->where('user_id', $this->currentUserId())
+        ->latest()
+        ->get();
+
+    return view('posts.my-posts', compact('posts'));
     }
 }
