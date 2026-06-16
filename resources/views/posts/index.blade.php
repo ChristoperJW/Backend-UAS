@@ -199,20 +199,29 @@
                         @endif
                     </td>
 
-                    <td style="text-align: center">{{ $post->likes->count() }}</td>
-                    <td style="text-align: center">{{ $post->comments->count() }}</td>
-                    <td style="text-align: center">{{ $post->reposts->count() }}</td>
-                    <td style="text-align: center">{{ $post->favorites->count() }}</td>
+                    <td style="text-align: center">
+                        <img src="{{ asset('images/like.png') }}" width="25"> <br>
+                        {{ $post->likes->count() }}</td>
+                    <td style="text-align: center">
+                        <img src="{{ asset('images/comment.png') }}" width="25"> <br>
+                        {{ $post->comments->count() }}</td>
+                    <td style="text-align: center">
+                        <img src="{{ asset('images/repost.png') }}" width="25"> <br>
+                        {{ $post->reposts->count() }}</td>
+                    <td style="text-align: center">
+                        <img src="{{ asset('images/fav.png') }}" width="25"> <br>
+                        {{ $post->favorites->count() }}</td>
 
                     <td style="text-align: center">
                         <a href="{{ route('posts.show', $post) }}">Detail</a>
                         |
                         <a href="{{ route('posts.edit', $post) }}">Ubah</a>
-                        |
                         <form action="{{ route('posts.destroy', $post) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
-                            <button type="submit">Hapus</button>
+                            <button type="submit" style="background:none; border:none; cursor:pointer; padding:0;">
+                                <img src="{{ asset('images/Trash.png') }}" width="25">
+                            </button>
                         </form>
                     </td>
 
