@@ -23,6 +23,29 @@
                 </video>
             @endif
         @endif
+
+        <br><br>
+
+        @php
+            $alreadyLiked = $post->likes->contains('user_id', session('current_user_id'));
+        @endphp
+
+        @if (!$alreadyLiked)
+            <form method="POST" action="{{ route('posts.like', $post) }}" style="display:inline;">
+                @csrf
+                <button type="submit" style="background:none; border:none; cursor:pointer; padding:0;">
+                    <img src="{{ asset('images/like.png') }}" width="30">
+                </button>
+            </form>
+        @else
+            <form method="POST" action="{{ route('posts.unlike', $post) }}" style="display:inline;">
+                @csrf
+                @method('DELETE')
+                <button type="submit" style="background:none; border:none; cursor:pointer; padding:0;">
+                    <img src="{{ asset('images/like after.png') }}" width="25">
+                </button>
+            </form>
+        @endif
         
         <p>Caption : {{ $post->caption }}</p>
         <hr>

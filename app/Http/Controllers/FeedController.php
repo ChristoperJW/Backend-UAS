@@ -11,7 +11,7 @@ class FeedController extends Controller
 {
     public function index()
     {
-        $posts = Post::with(['user', 'comments.user'])->inRandomOrder()->take(3)->get();
+        $posts = Post::with(['user', 'comments.user', 'likes'])->inRandomOrder()->take(3)->get();
 
     foreach ($posts as $post) {
         Feed::firstOrCreate(['post_id' => $post->id]);
