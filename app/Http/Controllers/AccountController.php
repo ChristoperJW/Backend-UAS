@@ -71,6 +71,7 @@ class AccountController extends Controller
         }
 
         $user->require_follow_approval = $request->has('require_follow_approval');
+        $user->is_private = $request->has('is_private');
         $user->save();
 
         return redirect('/account')->with('success', 'Privacy setting updated successfully.');

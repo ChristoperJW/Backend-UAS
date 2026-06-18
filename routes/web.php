@@ -15,6 +15,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\RepostController;
 use App\Http\Controllers\StoryController;
+use App\Http\Controllers\CloseFriendController;
 
 Route::get('/', function () {
     if (!session()->has('current_user_id')) {
@@ -41,20 +42,6 @@ Route::get('/account',function(){
 Route::post('/account/delete', [AccountController::class, 'deleteAccount']);
 Route::get('/account/update', [AccountController::class, 'indexUpdate']);
 Route::post('/account/update', [AccountController::class, 'updateAccount']);
-
-
-Route::get('/switch-user/{id}', [FriendsController::class, 'switchUser']);
-Route::get('/friends', [FriendsController::class, 'index']);
-Route::get('/friends/followers', [FriendsController::class, 'followers']);
-Route::get('/friends/following', [FriendsController::class, 'following']);
-Route::post('/friends/{id}/follow', [FollowController::class, 'followWeb'])->name('friends.follow');
-Route::post('/friends/{id}/unfollow', [FollowController::class, 'unfollowWeb'])->name('friends.unfollow');
-Route::get('/friends/discover', [FriendsController::class, 'discover']);
-Route::post('/account/privacy', [AccountController::class, 'updatePrivacy']);
-Route::get('/friends/requests', [FriendsController::class, 'requests'])->name('friends.request');
-Route::post('/friends/requests/{id}/accept', [FollowController::class, 'acceptRequest'])->name('friends.requests.accept');
-Route::post('/friends/requests/{id}/reject', [FollowController::class, 'rejectRequest'])->name('friends.requests.reject');
-Route::get('/users/{id}/profile', [FriendsController::class, 'profile'])->name('users.profile');
 
 Route::get('/my-posts', [PostController::class, 'myPosts'])->name('posts.my');
 Route::resource('posts', PostController::class);
@@ -90,18 +77,22 @@ Route::group(['middleware' => function ($request, $next) {
     Route::post('/messages', [MessageController::class, 'sendMessage'])->name('messages.sendMessage');
     Route::delete('/messages/conversation/{userId}', [MessageController::class, 'removeFullConversation'])->name('messages.removeFullConversation');
     Route::delete('/messages/{messageId}', [MessageController::class, 'removeMessage'])->name('messages.removeMessage');
-    Route::get('/switch-user/{id}', [FriendsController::class, 'switchUser']);
+
     Route::get('/friends', [FriendsController::class, 'index']);
     Route::get('/friends/followers', [FriendsController::class, 'followers']);
     Route::get('/friends/following', [FriendsController::class, 'following']);
     Route::post('/friends/{id}/follow', [FollowController::class, 'followWeb'])->name('friends.follow');
     Route::post('/friends/{id}/unfollow', [FollowController::class, 'unfollowWeb'])->name('friends.unfollow');
     Route::get('/friends/discover', [FriendsController::class, 'discover']);
-    Route::post('/account/privacy', [AccountController::class, 'updatePrivacy']);
+    Route::post('/account/privacy', [AccountController::class, 'updatePrivacy'])->name('account_privacy');
     Route::get('/friends/requests', [FriendsController::class, 'requests'])->name('friends.request');
     Route::post('/friends/requests/{id}/accept', [FollowController::class, 'acceptRequest'])->name('friends.requests.accept');
     Route::post('/friends/requests/{id}/reject', [FollowController::class, 'rejectRequest'])->name('friends.requests.reject');
     Route::get('/users/{id}/profile', [FriendsController::class, 'profile'])->name('users.profile');
+    Route::get('/friends/close-friends', [CloseFriendController::class, 'index'])->name('close-friends.index');
+    Route::post('/friends/close-friends/{id}/add', [CloseFriendController::class, 'store'])->name('close-friends.add');
+    Route::post('/friends/close-friends/{id}/remove', [CloseFriendController::class, 'destroy'])->name('close-friends.remove');
+
     Route::get('/groups/create', [GroupController::class, 'create'])->name('groups.create');
     Route::post('/groups/store', [GroupController::class, 'store'])->name('groups.store');
     Route::get('/groups/{id}', [GroupController::class, 'show'])->name('groups.show');

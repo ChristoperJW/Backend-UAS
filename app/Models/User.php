@@ -16,6 +16,7 @@ class User extends Authenticatable
         'email',
         'password',
         'require_follow_approval',
+        'is_private',   
     ];
 
     protected $hidden = [
@@ -45,7 +46,7 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(
             User::class,
-            'follow',
+            'follows',
             'follower_id',
             'following_id',
         );

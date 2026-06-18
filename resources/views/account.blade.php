@@ -49,6 +49,18 @@
 
             <br><br>
 
+            <label>
+                <input
+                    type="checkbox"
+                    name="is_private"
+                    {{ $currentUser && $currentUser->is_private ? 'checked' : '' }}
+                >
+
+                Account Privacy (Private)
+            </label>
+
+            <br><br>
+
             <button type="submit">
                 Save Privacy Setting
             </button>

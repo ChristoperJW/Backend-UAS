@@ -89,21 +89,33 @@
 
     <div class="card">
         <h1>{{ $user->name }}</h1>
-        <p>{{ $user->email }}</p>
 
-        <div class="stats">
-            <div class="stat-box">
-                <h2>{{ $followersCount }}</h2>
-                <p>Followers</p>
+        @if($user->is_private)
+            <p>Private Account</p>
+        @else
+            <p>Public Account</p>
+        @endif
+
+        @if($canViewProfile)
+            <p>{{ $user->email }}</p>
+
+            <div class="stats">
+                <div class="stat-box">
+                    <h2>{{ $followersCount }}</h2>
+                    <p>Followers</p>
+                </div>
+
+                <div class="stat-box">
+                    <h2>{{ $followingCount }}</h2>
+                    <p>Following</p>
+                </div>
             </div>
 
-            <div class="stat-box">
-                <h2>{{ $followingCount }}</h2>
-                <p>Following</p>
-            </div>
-        </div>
-
-        <br>
+            <br>
+        @else
+            <p>This account is private. Follow this user to view their profile.</p>
+            <br>
+        @endif
 
         @if($currentUserId != $user->id)
 
@@ -131,12 +143,10 @@
     </div>
 
     <a href="/friends">
-    <button>Back to Friends</button>
+        <button>Back to Friends</button>
     </a>
 
 </div>
-
-
 
 </body>
 </html>
