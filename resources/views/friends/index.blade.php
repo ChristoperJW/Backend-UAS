@@ -99,6 +99,7 @@
             <a href="/friends/following">Following</a>
             <a href="/friends/discover">Discover</a>
             <a href="/friends/requests">Requests</a>
+            <a href="/friends/close-friends">Close Friends</a>
         </div>
 
         <h1>Friends</h1>
