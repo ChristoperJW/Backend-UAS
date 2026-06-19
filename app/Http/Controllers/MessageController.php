@@ -94,13 +94,26 @@ class MessageController extends Controller
     {
         $request->validate([
             'receiver_id' => 'required|exists:users,id',
-            'content' => 'required|string'
+            'content' => 'nullable|string',
+            'media' => 'nullable|file|mimes:jpg,jpeg,png,mp4,mov,avi|max:20480'
         ]);
+
+        $mediaPath = null;
+        $mediaType = null;
+
+        if ($request->hasFile('media')) {
+            $file = $request->file('media');
+            $mediaPath = $file->store('messages_media', 'public');
+            $mime = $file->getMimeType();
+            $mediaType = str_starts_with($mime, 'video/') ? 'video' : 'image';
+        }
 
         Message::create([
             'sender_id' => session('current_user_id'),
             'receiver_id' => $request->receiver_id,
-            'content' => $request->content
+            'content' => $request->content ?? '',
+            'media_path' => $mediaPath,
+            'media_type' => $mediaType
         ]);
 
         return back();
@@ -124,7 +137,8 @@ class MessageController extends Controller
 
         if ($request->type === 'for_everyone') {
             if ($message->sender_id == $currentUserId) {
-                $message->delete();
+                $message->content = 'Pesan telah dihapus';
+                $message->save();
             }
         } else {
             if ($message->sender_id == $currentUserId) {
