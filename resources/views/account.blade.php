@@ -1,33 +1,45 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Account Settings</title>
+        <title>@lang('Account Settings')</title>
     </head>
     <body>
         <div style="display: flex; align-items: center; gap: 10px;">
         <img src="{{ asset('images/settings.png') }}" width="50">
-        <h1>Account Settings</h1>
+        <h1>@lang('Account Settings')</h1>
         </div>
 
         <form action="/account/update" method="GET">
             @csrf
             <button type="submit">
-                Update Account
+                {{ __('Update Account') }}
             </button>
         </form>
 
         <hr>
 
-        <form action="/account/delete" method="POST" onsubmit="return confirm('Are you absolutely sure you want to delete your account? This cannot be undone!');">
+
+        
+        
+        @if (app()->getLocale() == 'id') 
+            <form action="/account/delete" method="POST" onsubmit="return confirm('Apakah Anda benar-benar yakin ingin menghapus akun? Tindakan ini tidak dapat dibatalkan!');">
             @csrf
             <button type="submit" style="background: red; color: white; padding: 10px; border-radius: 5px; cursor: pointer;">
-                Delete My Account
+                {{ __('Delete My Account') }}
             </button>
-        </form>
-
+            </form>
+        @else 
+            <form action="/account/delete" method="POST" onsubmit="return confirm('Are you absolutely sure you want to delete your account? This cannot be undone!');">
+            @csrf
+            <button type="submit" style="background: red; color: white; padding: 10px; border-radius: 5px; cursor: pointer;">
+                {{ __('Delete My Account') }}
+            </button>
+            </form>
+        @endif
         <hr>
 
-        <h3>Privacy Settings</h3>
+        <h3>@lang('Privacy Settings')</h3>
 
         @if(session('success'))
             <p style="color: green;">{{ session('success') }}</p>
@@ -46,8 +58,7 @@
                     name="require_follow_approval"
                     {{ $currentUser && $currentUser->require_follow_approval ? 'checked' : '' }}
                 >
-
-                Require approval before someone can follow me
+                {{ __('Require approval before someone can follow me') }}
             </label>
 
             <br><br>
@@ -58,14 +69,13 @@
                     name="is_private"
                     {{ $currentUser && $currentUser->is_private ? 'checked' : '' }}
                 >
-
-                Account Privacy (Private)
+                {{ __('Account Privacy (Private)') }}
             </label>
 
             <br><br>
 
             <button type="submit">
-                Save Privacy Setting
+                {{ __('Save Privacy Setting') }}
             </button>
         </form>
 
@@ -73,10 +83,27 @@
 
         <a href="{{ route('reports.index') }}">
             <button type="button" style="background: red; color: white; padding: 10px; border-radius: 5px; cursor: pointer;">
-                Report an Issue
+                {{ __('Report an Issue') }}
             </button>
         </a><br>
+        <br>
+
+        <label for="language">@lang('Select Language:')</label>
+        <br>
         
-        <a href="/">Back</a>
+        @if (app()->getLocale() === 'id') 
+            <span>@lang('Current Language: Indonesian')</span>
+            <nav>
+                <a href="{{ url('lang/en') }}">@lang('Ganti ke Inggris')</a>
+            </nav>
+        @else
+            <span>@lang('Current Language: English')</span>
+            <nav>
+                <a href="{{ url('lang/id') }}">@lang('Ganti ke Indonesia')</a>
+            </nav>
+        @endif 
+        
+        <br>
+        <a href="/">@lang('Back')</a>
     </body>
 </html>

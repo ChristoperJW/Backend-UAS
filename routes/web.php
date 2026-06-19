@@ -18,6 +18,13 @@ use App\Http\Controllers\StoryController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\CloseFriendController;
 
+Route::get('/lang/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'id'])) {
+        session(['applocale' => $locale]);
+    }
+    return back();
+});
+
 Route::get('/', function () {
     if (!session()->has('current_user_id')) {
         return redirect('/login')->with('error', 'Please log in first!');
