@@ -28,6 +28,10 @@ class LikeController extends Controller
         NotificationController::create(
         $post->user_id, $this->currentUserId(), 'like', $post->id);
 
+        if (str_contains(url()->previous(), 'feeds')) {
+            return redirect()->route('feeds.index');
+        }
+
         return redirect()->route('posts.show', $post)->with('success', 'Post Liked');
     }
 
@@ -40,6 +44,10 @@ class LikeController extends Controller
         Like::where('user_id', $this->currentUserId())
         ->where('post_id', $post->id)
         ->delete();
+
+        if (str_contains(url()->previous(), 'feeds')) {
+            return redirect()->route('feeds.index');
+        }
 
         return redirect()->route('posts.show', $post)->with('success', 'Post Unliked');
     }

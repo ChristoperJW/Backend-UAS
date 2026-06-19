@@ -7,11 +7,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::statement("ALTER TABLE notifications MODIFY type ENUM('like', 'comment', 'follow', 'tag_post', 'repost') NOT NULL");
+        DB::statement("ALTER TABLE notifications MODIFY type ENUM('like', 'comment', 'follow', 'tag_post', 'repost', 'favorite') NOT NULL");
     }
 
     public function down(): void
     {
-        DB::statement("ALTER TABLE notifications MODIFY type ENUM('like', 'comment', 'follow', 'tag_post') NOT NULL");
+        DB::statement("ALTER TABLE notifications MODIFY type ENUM('like', 'comment', 'follow', 'tag_post', 'repost', 'favorite') NOT NULL");
     }
 };

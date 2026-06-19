@@ -30,6 +30,12 @@
                 @if ($notif->post)
                     - <a href="{{ route('posts.show', $notif->post) }}">"{{ $notif->post->caption }}"</a>
                 @endif
+
+            @elseif ($notif->type === 'favorite')
+            {{ $notif->sender->name }} menyimpan postingan Anda ke favorit
+            @if ($notif->post)
+                - <a href="{{ route('posts.show', $notif->post) }}">"{{ $notif->post->caption }}"</a>
+            @endif
             @endif
 
             - <small>{{ $notif->created_at->diffForHumans() }}</small>

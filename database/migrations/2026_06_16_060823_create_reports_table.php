@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notifications', function (Blueprint $table) {
+        Schema::create('reports', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id');
-            $table->foreignId('sender_id');
-            $table->enum('type', ['like', 'comment', 'follow', 'tag_post', 'repost', 'favorite']);
-            $table->foreignId('post_id')->nullable();
-            $table->timestamp('read_at')->nullable();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->text('message');
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('notifications');
+        Schema::dropIfExists('reports');
     }
 };

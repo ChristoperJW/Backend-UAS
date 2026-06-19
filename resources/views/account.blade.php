@@ -4,7 +4,10 @@
         <title>Account Settings</title>
     </head>
     <body>
+        <div style="display: flex; align-items: center; gap: 10px;">
+        <img src="{{ asset('images/settings.png') }}" width="50">
         <h1>Account Settings</h1>
+        </div>
 
         <form action="/account/update" method="GET">
             @csrf
@@ -68,6 +71,12 @@
 
         <br>
 
+        <a href="{{ route('reports.index') }}">
+            <button type="button" style="background: red; color: white; padding: 10px; border-radius: 5px; cursor: pointer;">
+                Report an Issue
+            </button>
+        </a><br>
+        
         <a href="/">Back</a>
     </body>
 </html>

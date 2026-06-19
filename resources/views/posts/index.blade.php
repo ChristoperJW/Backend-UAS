@@ -199,16 +199,25 @@
                         @endif
                     </td>
 
-                    <td style="text-align: center">{{ $post->likes->count() }}</td>
-                    <td style="text-align: center">{{ $post->comments->count() }}</td>
-                    <td style="text-align: center">{{ $post->reposts->count() }}</td>
-                    <td style="text-align: center">{{ $post->favorites->count() }}</td>
+                    <td style="text-align: center">
+                        <img src="{{ asset('images/like.png') }}" width="40"> <br>
+                        {{ $post->likes->count() }}</td>
+                    <td style="text-align: center">
+                        <a href="{{ route('comments.index') }}">
+                            <img src="{{ asset('images/comment.png') }}" width="40">
+                        </a> <br>
+                            {{ $post->comments->count() }}</td>
+                    <td style="text-align: center">
+                        <img src="{{ asset('images/repost.png') }}" width="40"> <br>
+                        {{ $post->reposts->count() }}</td>
+                    <td style="text-align: center">
+                        <img src="{{ asset('images/fav.png') }}" width="40"> <br>
+                        {{ $post->favorites->count() }}</td>
 
                     <td style="text-align: center">
                         <a href="{{ route('posts.show', $post) }}">Detail</a>
                         |
                         <a href="{{ route('posts.edit', $post) }}">Ubah</a>
-                        |
                         <form action="{{ route('posts.destroy', $post) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')

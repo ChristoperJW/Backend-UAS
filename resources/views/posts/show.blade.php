@@ -52,22 +52,22 @@
     </tr>
 
     <tr>
-        <th>Jumlah Like</th>
+        <th><img src="{{ asset('images/like.png') }}" width="25"></th>
         <td>{{ $post->likes->count() }}</td>
     </tr>
 
     <tr>
-        <th>Jumlah Komentar</th>
+        <th><img src="{{ asset('images/comment.png') }}" width="25"></th>
         <td>{{ $post->comments->count() }}</td>
     </tr>
 
     <tr>
-        <th>Jumlah Repost</th>
+        <th><img src="{{ asset('images/repost.png') }}" width="25"></th>
         <td>{{ $post->reposts->count() }}</td>
     </tr>
 
     <tr>
-        <th>Jumlah Favorit</th>
+        <th><img src="{{ asset('images/fav.png') }}" width="25"></th>
         <td>{{ $post->favorites->count() }}</td>
     </tr>
 
@@ -106,13 +106,17 @@
 @if (!$alreadyLiked)
     <form method="POST" action="{{ route('posts.like', $post) }}" style="display:inline;">
         @csrf
-        <button type="submit">Like</button>
+        <button type="submit" style="background:none; border:none; cursor:pointer; padding:0;">
+            <img src="{{ asset('images/like.png') }}" width="30">
+        </button>
     </form>
 @else
     <form method="POST" action="{{ route('posts.unlike', $post) }}" style="display:inline;">
         @csrf
         @method('DELETE')
-        <button type="submit">Unlike</button>
+         <button type="submit" style="background:none; border:none; cursor:pointer; padding:0;">
+            <img src="{{ asset('images/like after.png') }}" width="25">
+        </button>
     </form>
 @endif
 
@@ -125,13 +129,17 @@
 @if (!$alreadyFavorited)
     <form method="POST" action="{{ route('posts.favorite', $post) }}" style="display:inline;">
         @csrf
-        <button type="submit">Simpan ke Favorit</button>
+         <button type="submit" style="background:none; border:none; cursor:pointer; padding:0;">
+            <img src="{{ asset('images/fav.png') }}" width="30">
+        </button>
     </form>
 @else
     <form method="POST" action="{{ route('posts.unfavorite', $post) }}" style="display:inline;">
         @csrf
         @method('DELETE')
-        <button type="submit">Hapus dari Favorit</button>
+         <button type="submit" style="background:none; border:none; cursor:pointer; padding:0;">
+            <img src="{{ asset('images/fav after.png') }}" width="25">
+        </button>
     </form>
 @endif
 

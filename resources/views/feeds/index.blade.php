@@ -5,8 +5,48 @@
     <p>Sedang tidak ada postingan</p>
 @else
     @foreach($posts as $index => $post)
-        <p>Post {{ $index + 1 }} : {{ $post->user?->name ?? 'Pengguna Dihapus' }}</p>
-        <img src="{{ asset('images/' . $post->media) }}" width="400">
+        <div style="display: flex; align-items: center; gap: 10px;">
+        <img src="{{ asset('images/profile.png') }}" width="40">
+        <strong>{{ $post->user->name }}</strong>
+        </div>
+
+        @if($post->media)
+            @php
+                $extension = strtolower(pathinfo($post->media, PATHINFO_EXTENSION));
+            @endphp
+
+            @if(in_array($extension, ['jpg', 'jpeg', 'png']))
+                <img src="{{ asset('uploads/posts/' . $post->media) }}" width="400">
+            @elseif($extension == 'mp4')
+                <video width="400" controls>
+                    <source src="{{ asset('uploads/posts/' . $post->media) }}" type="video/mp4">
+                </video>
+            @endif
+        @endif
+
+        <br><br>
+
+        @php
+            $alreadyLiked = $post->likes->contains('user_id', session('current_user_id'));
+        @endphp
+
+        @if (!$alreadyLiked)
+            <form method="POST" action="{{ route('posts.like', $post) }}" style="display:inline;">
+                @csrf
+                <button type="submit" style="background:none; border:none; cursor:pointer; padding:0;">
+                    <img src="{{ asset('images/like.png') }}" width="30">
+                </button>
+            </form>
+        @else
+            <form method="POST" action="{{ route('posts.unlike', $post) }}" style="display:inline;">
+                @csrf
+                @method('DELETE')
+                <button type="submit" style="background:none; border:none; cursor:pointer; padding:0;">
+                    <img src="{{ asset('images/like after.png') }}" width="25">
+                </button>
+            </form>
+        @endif
+        
         <p>Caption : {{ $post->caption }}</p>
         <hr>
 
@@ -29,10 +69,10 @@
             @csrf
             <input type="hidden" name="post_id" value="{{ $post->id }}">
             <input type="text" name="komentar" placeholder="Tulis komentar..." required>
-            <button type="submit">Kirim</button>
+            <button type="submit">Send</button>
         </form>
         <hr>
     @endforeach
 @endif
 <br>
-<a href="/">Kembali ke Homepage</a>
+<a href="/">Back To Homepage</a>
