@@ -44,14 +44,6 @@ class FavoriteController extends Controller
             'post_id' => $post->id,
         ]);
 
-        $post = Post::findOrFail($post->id);
-        NotificationController::create(
-            $post->user_id,
-            $this->currentUserId(),
-            'favorite',
-            $post->id
-        );
-
         return back()->with('success', 'Post berhasil disimpan ke favorit.');
     }
 

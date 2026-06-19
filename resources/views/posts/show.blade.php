@@ -122,7 +122,9 @@
 
 @if ($post->user_id != session('current_user_id'))
     <form method="GET" action="{{ route('posts.repost.create', $post) }}" style="display:inline;">
-        <button type="submit">Repost</button>
+        <button type="submit" style="background:none; border:none; cursor:pointer; padding:0;">
+            <img src="{{ asset('images/repost.png') }}" width="30">
+        </button>
     </form>
 @endif
 
