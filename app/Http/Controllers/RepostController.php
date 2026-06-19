@@ -58,6 +58,11 @@ class RepostController extends Controller
             return redirect('/login')->with('error', 'Tolong Login Terlebih Dahulu!');
         }
 
+        if ($post->user_id == $this->currentUserId()) {
+        return redirect()->route('posts.show', $post)
+            ->with('error', 'Anda tidak bisa repost postingan sendiri.');
+        }
+
         $request->validate([
             'caption' => 'nullable|string|max:300',
         ]);

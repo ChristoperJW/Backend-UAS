@@ -44,18 +44,10 @@ class FavoriteController extends Controller
             'post_id' => $post->id,
         ]);
 
-        $post = Post::findOrFail($post->id);
-        NotificationController::create(
-            $post->user_id,
-            $this->currentUserId(),
-            'favorite',
-            $post->id
-        );
-
         return back()->with('success', 'Post berhasil disimpan ke favorit.');
     }
 
-    public function destroy(Favorite $favorite, Post $post)
+    public function destroy(Post $post)
     {
         if (!$this->currentUserId()) {
             return redirect('/login')->with('error', 'Tolong Login Terlebih Dahulu!');
