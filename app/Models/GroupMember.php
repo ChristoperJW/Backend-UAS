@@ -9,7 +9,11 @@ class GroupMember extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['group_id', 'user_id'];
+    protected $fillable = [
+    'group_id',
+    'user_id',
+    'role',
+];
 
     public function group()
     {
