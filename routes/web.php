@@ -93,7 +93,7 @@ Route::group(['middleware' => function ($request, $next) {
     Route::get('/groups/create', [GroupController::class, 'create'])->name('groups.create');
     Route::post('/groups/store', [GroupController::class, 'store'])->name('groups.store');
     Route::get('/groups/{id}', [GroupController::class, 'show'])->name('groups.show');
-Route::post('/groups/{id}/send', [GroupController::class, 'sendMessage'])->name('groups.sendMessage');
+    Route::post('/groups/{id}/send', [GroupController::class, 'sendMessage'])->name('groups.sendMessage');
 });
 
 Route::get('/feeds', [FeedController::class, 'index'])->name('feeds.index');
