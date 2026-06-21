@@ -7,6 +7,7 @@ use App\Models\Follow;
 use Illuminate\Http\Request;
 use App\Http\Controllers\NotificationController;
 use App\Models\FollowRequest;
+use App\Models\CloseFriend;
 
 class FollowController extends Controller
 {
@@ -42,20 +43,28 @@ class FollowController extends Controller
 
     public function unfollow($id)
     {
-        $currentUserId = session('current_user_id', 1);
+        $currentUserId = session('current_user_id');
 
         $follow = Follow::where('follower_id', $currentUserId)
             ->where('following_id', $id)
             ->first();
 
-        if(!$follow){
+        if (!$follow) {
             return response()->json([
                 'message' => 'Follow relationship not found'
             ], 400);
         }
 
         $follow->delete();
-        
+
+        FollowRequest::where('sender_id', $currentUserId)
+            ->where('receiver_id', $id)
+            ->delete();
+
+        CloseFriend::where('user_id', $id)
+            ->where('close_friend_id', $currentUserId)
+            ->delete();
+
         return response()->json([
             'message' => 'User unfollowed successfully'
         ]);
@@ -155,10 +164,18 @@ class FollowController extends Controller
 
     public function unfollowWeb($id)
     {
-        $currentUserId = session('current_user_id', 1);
+        $currentUserId = session('current_user_id');
 
         Follow::where('follower_id', $currentUserId)
             ->where('following_id', $id)
+            ->delete();
+
+        FollowRequest::where('sender_id', $currentUserId)
+            ->where('receiver_id', $id)
+            ->delete();
+
+        CloseFriend::where('user_id', $id)
+            ->where('close_friend_id', $currentUserId)
             ->delete();
 
         return back()
