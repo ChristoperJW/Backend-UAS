@@ -15,6 +15,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'require_follow_approval',
+        'is_private',   
     ];
 
     protected $hidden = [
@@ -44,7 +46,7 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(
             User::class,
-            'follow',
+            'follows',
             'follower_id',
             'following_id',
         );
@@ -59,4 +61,39 @@ class User extends Authenticatable
     {
         return $this->hasMany(Message::class, 'receiver_id');
     }
-} 
+    
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+
+    public function taggedPosts()
+    {
+        return $this->belongsToMany(Post::class, 'post_user_tags');
+    }
+
+    public function groups()
+    {
+        return $this->hasManyThrough(Group::class, GroupMember::class, 'user_id', 'id', 'id', 'group_id');
+    }
+
+    public function favoritePosts()
+    {
+    return $this->belongsToMany(Post::class, 'favorites');
+    }
+
+    public function reposts()
+    {
+    return $this->hasMany(Repost::class);
+    }
+
+    public function stories()
+    {
+    return $this->hasMany(Story::class);
+    }
+}

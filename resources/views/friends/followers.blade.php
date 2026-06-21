@@ -1,37 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Following</title>
+    <title>Followers</title>
 </head>
 <body>
 
-    <h1>Following List</h1>
+    <h1>Followers List</h1>
 
     <hr>
 
-    @forelse($followingUsers as $user)
+    @if(session('success'))
+        <p>{{ session('success') }}</p>
+    @endif
+
+    @if(session('error'))
+        <p>{{ session('error') }}</p>
+    @endif
+
+    @forelse($followers as $user)
 
         <div style="margin-bottom: 15px;">
 
             <strong>{{ $user->name }}</strong>
 
-            <form action="{{ route('friends.unfollow', $user->id) }}"
-                  method="POST"
-                  style="display:inline;">
+            <a href="{{ route('users.profile', $user->id) }}">
+                View Profile
+            </a>
 
-                @csrf
+            @if(in_array($user->id, $closeFriendIds))
+                <form action="{{ route('close-friends.remove', $user->id) }}" method="POST" style="display:inline;">
+                    @csrf
 
-                <button type="submit">
-                    Unfollow
-                </button>
+                    <button type="submit">
+                        Remove from Close Friend
+                    </button>
+                </form>
+            @else
+                <form action="{{ route('close-friends.add', $user->id) }}" method="POST" style="display:inline;">
+                    @csrf
 
-            </form>
+                    <button type="submit">
+                        Add to Close Friend
+                    </button>
+                </form>
+            @endif
 
         </div>
 
     @empty
 
-        <p>No following users yet.</p>
+        <p>No followers yet.</p>
 
     @endforelse
 
