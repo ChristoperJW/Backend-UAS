@@ -45,7 +45,7 @@ Route::get('/account',function(){
     if (!session()->has('current_user_id')) {
         return redirect('/login')->with('error', 'Please log in first!');
     }
-    return view('account');
+    return view('auth.account');
 });
 Route::post('/account/delete', [AccountController::class, 'deleteAccount']);
 Route::get('/account/update', [AccountController::class, 'indexUpdate']);
@@ -101,6 +101,7 @@ Route::group(['middleware' => function ($request, $next) {
     Route::post('/groups/store', [GroupController::class, 'store'])->name('groups.store');
     Route::get('/groups/{id}', [GroupController::class, 'show'])->name('groups.show');
     Route::post('/groups/{id}/send', [GroupController::class, 'sendMessage'])->name('groups.sendMessage');
+    Route::delete('/groups/{groupId}/members/{userId}', [GroupController::class, 'removeMember'])->name('groups.removeMember');
 });
 
 Route::get('/feeds', [FeedController::class, 'index'])->name('feeds.index');

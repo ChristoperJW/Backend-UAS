@@ -16,7 +16,11 @@ class Message extends Model
         'group_id', 
         'content', 
         'is_read', 
-        'read_at'
+        'read_at',
+        'deleted_by_sender',
+        'deleted_by_receiver',
+        'media_path',
+        'media_type'
     ];
 
     public function group()
