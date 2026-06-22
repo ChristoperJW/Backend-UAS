@@ -181,6 +181,15 @@
             fileInput.addEventListener('change', function() {
                 const file = this.files[0];
                 if (file) {
+                    const maxSize = 20 * 1024 * 1024;
+                    
+                    if (file.size > maxSize) {
+                        alert('Ukuran file terlalu besar! Maksimal lampiran adalah 20MB.');
+                        this.value = '';
+                        previewContainer.classList.add('hidden');
+                        return;
+                    }
+
                     const fileURL = URL.createObjectURL(file);
                     previewContainer.classList.remove('hidden');
 

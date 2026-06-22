@@ -214,6 +214,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const timeElements = document.querySelectorAll('.chat-time');
+            
             timeElements.forEach(el => {
                 const timestamp = el.getAttribute('data-timestamp');
                 if (timestamp) {
@@ -221,6 +222,7 @@
                     el.textContent = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 }
             });
+
             const container = document.getElementById('chat-container');
             if (container) {
                 container.scrollTop = container.scrollHeight;
@@ -239,6 +241,15 @@
             fileInput.addEventListener('change', function() {
                 const file = this.files[0];
                 if (file) {
+                    const maxSize = 20 * 1024 * 1024;
+                    
+                    if (file.size > maxSize) {
+                        alert('Ukuran file terlalu besar! Maksimal lampiran adalah 20MB.');
+                        this.value = '';
+                        previewContainer.classList.add('hidden');
+                        return;
+                    }
+
                     const fileURL = URL.createObjectURL(file);
                     previewContainer.classList.remove('hidden');
 
