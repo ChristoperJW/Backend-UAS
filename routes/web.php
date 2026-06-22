@@ -45,7 +45,7 @@ Route::get('/account',function(){
     if (!session()->has('current_user_id')) {
         return redirect('/login')->with('error', 'Please log in first!');
     }
-    return view('account');
+    return view('auth.account');
 });
 Route::post('/account/delete', [AccountController::class, 'deleteAccount']);
 Route::get('/account/update', [AccountController::class, 'indexUpdate']);

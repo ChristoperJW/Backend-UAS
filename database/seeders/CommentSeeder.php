@@ -31,7 +31,7 @@ class CommentSeeder extends Seeder
         $post2 = Post::firstOrCreate([
             'caption' => 'Liburan',
             'user_id' => $user2->id,
-            'media' => '1781509761_Liburan.jpg'
+            'media' => '1781868609_Memancing.jpg'
         ]);
 
         Comment::create([
