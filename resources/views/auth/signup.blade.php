@@ -46,11 +46,6 @@
                  <input type="password" name="password_confirmation" id="password_confirmation" class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 bg-gray-50 transition-all" placeholder="Konfirmasi Password yang dibuat" required>
             </div>
 
-            <div>
-                <label for="password_confirmation" class="block text-sm font-bold text-gray-700 mb-2">Konfirmasi Kata Sandi</label>
-                <input type="password" name="password_confirmation" id="password_confirmation" class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 bg-gray-50 transition-all" placeholder="Konfirmasi kata sandi" required>
-            </div>
-
             <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl transition-colors shadow-sm hover:shadow-md mt-2">
                 Daftar Sekarang
             </button>
