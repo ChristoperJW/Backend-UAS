@@ -13,27 +13,33 @@ class MessageController extends Controller
     public function getConversations()
     {
         $userId = session('current_user_id');
-        
-        $messages = Message::where('sender_id', $userId)
-            ->orWhere('receiver_id', $userId)
+
+        $messages = Message::whereNull('group_id')
+            ->where(function ($query) use ($userId) {
+                $query->where(function ($q) use ($userId) {
+                    $q->where('sender_id', $userId)
+                      ->where('deleted_by_sender', false);
+                })->orWhere(function ($q) use ($userId) {
+                    $q->where('receiver_id', $userId)
+                      ->where('deleted_by_receiver', false);
+                });
+            })
             ->orderBy('created_at', 'desc')
             ->get();
 
         $conversations = collect();
         foreach ($messages as $message) {
-            if (is_null($message->group_id)) {
-                $otherUserId = $message->sender_id === $userId ? $message->receiver_id : $message->sender_id;
-                
-                if (!$conversations->has($otherUserId) && !is_null($otherUserId)) {
-                    $conversations->put($otherUserId, User::find($otherUserId));
-                }
+            $otherUserId = $message->sender_id === $userId ? $message->receiver_id : $message->sender_id;
+            
+            if (!$conversations->has($otherUserId) && !is_null($otherUserId)) {
+                $conversations->put($otherUserId, \App\Models\User::find($otherUserId));
             }
         }
         
         $activeChats = $conversations->values();
-        $allUsers = User::orderBy('name', 'asc')->get();
+        $allUsers = \App\Models\User::orderBy('name', 'asc')->get();
 
-        $groups = Group::whereHas('members', function($query) use ($userId) {
+        $groups = \App\Models\Group::whereHas('members', function($query) use ($userId) {
             $query->where('user_id', $userId);
         })->get();
 
@@ -121,11 +127,21 @@ class MessageController extends Controller
 
     public function removeFullConversation($userId)
     {
-        Message::where(function($q) use ($userId) {
-            $q->where('sender_id', session('current_user_id'))->where('receiver_id', $userId);
-        })->orWhere(function($q) use ($userId) {
-            $q->where('sender_id', $userId)->where('receiver_id', session('current_user_id'));
-        })->delete();
+        $currentUserId = session('current_user_id');
+
+        $messages = Message::where(function ($query) use ($currentUserId, $userId) {
+            $query->where('sender_id', $currentUserId)->where('receiver_id', $userId);
+        })->orWhere(function ($query) use ($currentUserId, $userId) {
+            $query->where('sender_id', $userId)->where('receiver_id', $currentUserId);
+        })->get();
+
+        foreach ($messages as $message) {
+            if ($message->sender_id === $currentUserId) {
+                $message->update(['deleted_by_sender' => true]);
+            } elseif ($message->receiver_id === $currentUserId) {
+                $message->update(['deleted_by_receiver' => true]);
+            }
+        }
 
         return redirect()->route('messages.getConversations');
     }
